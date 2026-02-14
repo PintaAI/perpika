@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import React from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card'
+import { Card, CardHeader, CardContent } from '@/components/ui/card'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 import Image from 'next/image'
 import {
@@ -21,7 +21,7 @@ export default function ThankYouPage() {
         <div className="text-center space-y-4">
           <Image
             src="/perpika.png"
-            alt="ICONIK 2025"
+            alt="ICONIK 2026"
             width={180}
             height={90}
             className="mx-auto rounded-lg"
@@ -33,7 +33,7 @@ export default function ThankYouPage() {
               Registration Successful!
             </AlertTitle>
             <AlertDescription className="text-green-700">
-              Thank you for registering for ICONIK 2025.
+              Thank you for registering for ICONIK 2026.
             </AlertDescription>
           </Alert>
         </div>
@@ -41,7 +41,7 @@ export default function ThankYouPage() {
         <Card className="border-2 shadow-lg transition-all duration-300 hover:border-primary/20">
           <CardHeader>
             <h1 className="text-4xl font-bold text-center text-foreground">
-              Welcome to ICONIK 2025!
+              Welcome to ICONIK 2026!
             </h1>
             <p className="text-center text-muted-foreground">
               We have received your registration. Our team will contact you shortly via email with further information.
@@ -75,21 +75,21 @@ export default function ThankYouPage() {
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-2 gap-6">
-              <Link href="/timeline" className="block">
+              <Link href="/#about" className="block">
                 <Card className="h-full transition-all hover:border-primary hover:shadow-md">
                   <CardContent className="flex items-center gap-3 p-4">
                     <div className="p-2 rounded-full bg-primary/10">
                       <CalendarIcon className="h-5 w-5 text-primary" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold">Event Schedule</h3>
-                      <p className="text-sm text-muted-foreground">View complete timeline</p>
+                      <h3 className="font-semibold">About ICONIK 2026</h3>
+                      <p className="text-sm text-muted-foreground">Read event overview</p>
                     </div>
                     <ArrowRight className="h-5 w-5 text-muted-foreground" />
                   </CardContent>
                 </Card>
               </Link>
-              <Link href="/venue" className="block">
+              <Link href="/#venue" className="block">
                 <Card className="h-full transition-all hover:border-primary hover:shadow-md">
                   <CardContent className="flex items-center gap-3 p-4">
                     <div className="p-2 rounded-full bg-primary/10">

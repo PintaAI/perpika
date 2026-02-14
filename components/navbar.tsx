@@ -4,9 +4,8 @@ import * as React from "react"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import Link from "next/link"
-import { usePathname, useSearchParams } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { Menu, Info, BookOpen, Users, Search } from "lucide-react"
+import { Menu, Info, BookOpen, Users, Search, Calendar, Target } from "lucide-react"
 import {
   Sheet,
   SheetContent,
@@ -14,11 +13,8 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet"
 import { IconCreditCard } from "@tabler/icons-react"
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 
 export function Navbar() {
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
   const [isScrolled, setIsScrolled] = React.useState(false)
   const [activeSection, setActiveSection] = React.useState("")
 
@@ -52,9 +48,11 @@ export function Navbar() {
   
   const navItems = [
     { name: "About ICONIK", href: "/#about", icon: Info },
+    { name: "Timeline", href: "/#timeline", icon: Calendar },
     { name: "Topics", href: "/#topics", icon: BookOpen },
-    { name: "Registration Fee", href: "/#registration", icon: IconCreditCard },
-    { name: "Keynote Speaker", href: "/#keynote", icon: Users },
+    { name: "Registration Fee", href: "/#fees", icon: IconCreditCard },
+    { name: "Objectives", href: "/#objectives", icon: Target },
+    { name: "Speakers", href: "/#speakers", icon: Users },
   ]
 
   return (
@@ -75,7 +73,7 @@ export function Navbar() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-[300px] sm:w-[400px]">
-              <SheetTitle className="text-lg font-semibold">ICONIK 2025</SheetTitle>
+              <SheetTitle className="text-lg font-semibold">ICONIK 2026</SheetTitle>
               <nav className="flex flex-col mt-6">
               <div className="flex items-center px-3 py-2 mb-4 border rounded-md bg-muted/50">
                 <Search className="w-4 h-4 mr-2 opacity-50" />
@@ -120,7 +118,7 @@ export function Navbar() {
           <Link href="/" className="flex items-center gap-3">
             <Image
               src="/perpika.png"
-              alt="ICONIK 2025"
+              alt="ICONIK 2026"
               width={40}
               height={40}
               className={cn(
@@ -132,7 +130,7 @@ export function Navbar() {
               <span className={cn(
                 "font-semibold transition-all duration-200",
                 isScrolled ? "text-base" : "text-lg"
-              )}>ICONIK 2025</span>
+              )}>ICONIK 2026</span>
               <span className={cn(
                 "text-muted-foreground transition-all duration-200",
                 isScrolled ? "text-[10px]" : "text-xs"
@@ -145,12 +143,12 @@ export function Navbar() {
           <Link href="/" className="flex items-center gap-3">
             <Image
               src="/perpika.png"
-              alt="ICONIK 2025"
+              alt="ICONIK 2026"
               width={32}
               height={32}
               className="object-contain"
             />
-            <span className="text-lg font-semibold">ICONIK 2025</span>
+            <span className="text-lg font-semibold">ICONIK 2026</span>
           </Link>
         </div>
 
@@ -174,11 +172,11 @@ export function Navbar() {
           ))}
         </nav>
         <div className="ml-auto hidden md:flex items-center space-x-4">
-          <Link href="https://docs.google.com/document/d/1lZd0P6Apgwlf6uslicOPaM1F793J3gRx/edit#heading=h.gjdgxs"
+          <Link href="https://docs.google.com/document/d/12he2inpCHiFIWEG_CuOo4izqokGKMSuWobf7H33YvT0/edit?tab=t.0"
             target="_blank"
             rel="noopener noreferrer">
             <Button variant="outline" className="transition-all duration-200 font-medium">
-            Template
+            Guideline
             </Button>
           </Link>
           <Link href="/login">
