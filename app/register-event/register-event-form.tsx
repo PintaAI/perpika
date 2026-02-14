@@ -120,7 +120,7 @@ export default function RegisterEventForm() {
                 </div>
                 <h2 className="text-xl font-semibold">Basic Information</h2>
               </div>
-              <p className="text-sm text-muted-foreground">Choose how you would like to participate in ICONIK 2025</p>
+              <p className="text-sm text-muted-foreground">Choose how you would like to participate in ICONIK 2026</p>
             </div>
 
             <FormField

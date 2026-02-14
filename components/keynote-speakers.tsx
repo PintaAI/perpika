@@ -3,104 +3,93 @@ import { Mic, User2 } from "lucide-react"
 import { motion } from "framer-motion"
 import { ReactNode } from "react"
 import Image from "next/image"
+import { cn } from "@/lib/utils"
 
-const AnimatedCard = ({ children }: { children: ReactNode }) => {
+const AnimatedCard = ({ children, className }: { children: ReactNode; className?: string }) => {
   return (
-    <motion.div
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      transition={{ type: "spring", stiffness: 300 }}
-    >
-      <Card className="p-4 md:p-6 shadow-md hover:shadow-lg transition-shadow">
-        {children}
-      </Card>
+    <motion.div whileHover={{ scale: 1.01 }} transition={{ type: "spring", stiffness: 280 }} className={className}>
+      <Card className="p-4 md:p-6 shadow-md hover:shadow-lg transition-shadow h-full">{children}</Card>
     </motion.div>
   )
 }
 
-const keynoteSpeakersData = [
+const keynoteSpeakers = [
   {
-    name: "Ministry of Youth and Sport of Indonesia",
-    title: "(confirmed)",
-    theme: "Unleashing Youth Potential: Innovation and Creativity for Global Leadership",
-    image: "/kemenpora.png", // Placeholder
-    day: "Day 1"
+    name: "Anies Rasyid Baswedan, S.E., M.P.P., Ph.D.",
+    title: "Governor of Jakarta (2017-2022); Minister of Education and Culture (2014-2016)",
+    image: "/speakers/Anies%20Rasyid%20Baswedan.jpeg",
   },
   {
-    name: "Teuku Faris Riandi",
-    title: "Commercial Manager Perta Arun Gas, Pertamina Subholding Gas Group",
-    theme: " Indonesia's Significant Role in Today's Energy Transition",
-    image: "/pertamina.png", // Placeholder
-    day: "Day 1"
+    name: "Prof. Brian Yuliarto, S.T., M.Eng., Ph.D.",
+    title: "Minister of Higher Education, Science, and Technology (2025-now)",
+    image: "/speakers/Prof.%20Brian%20Yuliarto.jpg",
   },
-  {
-    name: "Amaliah Fitriah, Ph.D",
-    title: "Educational & Cultural Attache of Indonesia for ROK, Indonesia Embassy in ROK",
-    theme: "Role of Students in Strengthening Academic Diplomatic through Science and Culture Exchange",
-    image: "/kbri.png", // Placeholder
-    day: "Day 1"
-  },
-  {
-    name: "Adam Lukman Chaubah",
-    title: "Koordinator PPIDK Asia Oceania 2024-2025",
-    theme: "Students as Agent for Reaching Indonesia Emas 2045",
-    image: "/adam_lukman.jpg", // Placeholder
-    day: "Day 1"
-  }
 ]
 
+const plenarySpeakers = [
+  {
+    name: "Prof. Hyung-Jun Kim",
+    title: "Department of Cultural Anthropology, Kangwon National University",
+    image: "/speakers/Prof.%20Hyung-Jun%20Kim.jpg",
+  },
+]
+
+const SpeakerCard = ({ name, title, image, large = false }: { name: string; title: string; image: string; large?: boolean }) => (
+  <AnimatedCard className="h-full">
+    <div className="flex flex-col gap-4 items-start h-full">
+      <div className={`relative w-full rounded-xl overflow-hidden bg-muted border shrink-0 ${large ? "h-72 md:h-80" : "h-64 md:h-72"}`}>
+        <Image
+          src={image}
+          alt={name}
+          fill
+          className="object-cover"
+          onError={(e) => {
+            e.currentTarget.style.display = "none"
+            e.currentTarget.parentElement?.querySelector(".fallback-icon")?.classList.remove("hidden")
+          }}
+        />
+        <div className="fallback-icon hidden h-full w-full items-center justify-center flex">
+          <User2 className="h-12 w-12 text-muted-foreground/60" />
+        </div>
+      </div>
+      <div className="w-full min-h-28 flex flex-col">
+        <h4 className="text-lg sm:text-xl font-semibold leading-snug">{name}*</h4>
+        <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{title}</p>
+      </div>
+    </div>
+  </AnimatedCard>
+)
+
 const KeynoteSpeakers = () => {
+  const columns = [
+    { ...keynoteSpeakers[0], label: "Keynote Speaker" },
+    { ...keynoteSpeakers[1], label: "Keynote Speaker" },
+    { ...plenarySpeakers[0], label: "Plenary Speaker" },
+  ]
+
   return (
-    <section id="keynote" className="py-8 sm:py-12 md:py-20 px-2 sm:px-4 bg-white scroll-mt-16">
-      <div className="max-w-6xl mx-auto">
+    <section id="speakers" className="py-8 sm:py-12 md:py-20 px-2 sm:px-4 bg-white scroll-mt-16">
+      <div className="max-w-5xl mx-auto">
         <div className="flex items-center gap-2 sm:gap-3 justify-center mb-6 sm:mb-8">
           <div className="p-1.5 sm:p-2 bg-primary/10 rounded-full">
             <Mic className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
           </div>
           <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold">Speakers</h2>
         </div>
-        <div className="space-y-6 sm:space-y-8">
-          <div>
-            {/* <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-center">Day 1</h3> */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4">
-              {keynoteSpeakersData
-                .filter((speaker) => speaker.day === "Day 1")
-                .map((speaker) => (
-                <AnimatedCard key={speaker.name}>
-              <div className="flex flex-col h-[350px] sm:h-[400px]">
-                <div className="aspect-square relative bg-muted rounded-md sm:rounded-lg overflow-hidden flex items-center justify-center">
-                      <Image
-                        src={speaker.image}
-                        alt={`Foto ${speaker.name}`}
-                        layout="fill"
-                        objectFit="cover"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none';
-                          e.currentTarget.parentElement?.querySelector('.fallback-icon')?.classList.remove('hidden');
-                        }}
-                      />
-                      <div className="fallback-icon hidden">
-                        <User2 className="h-20 w-20 text-muted-foreground/50" />
-                      </div>
-                    </div>
-                <div className="mt-2 flex flex-col h-[140px] sm:h-[180px]">
-                  <h3 className="text-sm sm:text-base font-semibold line-clamp-2">{speaker.name}</h3>
-                  <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">{speaker.title}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5 sm:mt-1 line-clamp-3">
-                        {speaker.theme}
-                      </p>
-                      {/* <p className="text-xs text-muted-foreground mt-auto">
-                        {speaker.day}
-                      </p> */}
-                    </div>
-                  </div>
-                </AnimatedCard>
-              ))}
+        <div className="grid lg:grid-cols-3 gap-4 items-stretch">
+          {columns.map((speaker) => (
+            <div key={speaker.name} className="h-full">
+              <p className="text-xs font-semibold uppercase tracking-wide text-primary mb-2">{speaker.label}</p>
+              <SpeakerCard
+                name={speaker.name}
+                title={speaker.title}
+                image={speaker.image}
+                large
+              />
             </div>
-          </div>
-
-          
+          ))}
         </div>
+        <p className="text-sm text-muted-foreground mt-5">*on confirmation</p>
       </div>
     </section>
   )

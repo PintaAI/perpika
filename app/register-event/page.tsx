@@ -26,7 +26,7 @@ export default function RegisterEventPage() {
             <div className="space-y-4 pb-8">
               <div className="space-y-2">
                 <h1 className="bg-gradient-to-r from-primary/80 to-primary bg-clip-text text-4xl font-bold tracking-tight text-transparent md:text-5xl">
-                  ICONIK 2025
+                  ICONIK 2026
                 </h1>
                 <p className="text-lg font-medium text-muted-foreground">
                   International Conference by Indonesian Students in Korea
@@ -36,17 +36,17 @@ export default function RegisterEventPage() {
               <div className="flex flex-col items-center gap-2 pt-2">
                 <div className="flex items-center gap-2 text-sm">
                   <CalendarDays className="h-4 w-4 text-primary" />
-                  <span>31 July 2025</span>
+                  <span>27th June 2026</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <MapPin className="h-4 w-4 text-primary" />
-                  <span>Kangwon National University, Chuncheon Campus</span>
+                  <span>KAIST Guseong Campus, Daejeon, South Korea</span>
                 </div>
               </div>
 
               <div className="mx-auto max-w-md pt-4">
                 <p className="text-sm leading-relaxed text-muted-foreground">
-                  Join us in exploring education, technology, entrepreneurship, social justice, and sustainable development towards Indonesia Emas 2045.
+                  Theme: Recent Innovations at the Multidisciplinary Crossroads for Indonesia&apos;s Sustainable Development Goals.
                 </p>
               </div>
             </div>

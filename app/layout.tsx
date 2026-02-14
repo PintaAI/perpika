@@ -9,8 +9,8 @@ import { Suspense } from 'react';
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "ICONIK 2025 - International Conference by Indonesian Students in Korea",
-  description: "ICONIK brings together scholars, educators, policymakers, and students to highlight the vital contributions of young minds in shaping Indonesia's future.",
+  title: "ICONIK 2026 - International Conference by Indonesian Students in Korea",
+  description: "Recent Innovations at the Multidisciplinary Crossroads for Indonesia’s Sustainable Development Goals.",
 }
 
 export default function RootLayout({
