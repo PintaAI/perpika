@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card"
 import { Toaster } from "sonner"
 import { db } from "@/lib/db"
-import { CreateEarlyBirdForm } from "./create-early-bird-form"
+import { CreateEarlyBirdForm, EditEarlyBirdForm } from "./create-early-bird-form"
 import { PriceList } from "./price-list"
 
 async function getEarlyBirdData() {
@@ -81,6 +81,14 @@ export default async function EarlyBirdPage() {
                   <span className="text-sm">
                     {data.currentPeriod.isActive ? 'Aktif' : 'Tidak Aktif'}
                   </span>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium mb-2">Edit Periode Saat Ini</h3>
+                  <EditEarlyBirdForm
+                    periodId={data.currentPeriod.id}
+                    initialStartDate={data.currentPeriod.startDate}
+                    initialEndDate={data.currentPeriod.endDate}
+                  />
                 </div>
               </div>
             ) : (

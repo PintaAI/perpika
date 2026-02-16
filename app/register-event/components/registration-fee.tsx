@@ -12,11 +12,7 @@ import { useState, useEffect, useMemo } from "react"
 import { Card } from "@/components/ui/card"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Checkbox } from "@/components/ui/checkbox"
-import { getOnlineParticipantCount, checkEarlyBirdStatus, getRegistrationFee } from "../actions"
-
-// First 35 online participants are free
-// update: no limit to online participants
-const MAX_FREE_ONLINE_PARTICIPANTS = 999
+import { checkEarlyBirdStatus, getRegistrationFee } from "../actions"
 
 interface RegistrationFeeProps {
   form: UseFormReturn<z.infer<typeof formSchema>>
@@ -57,24 +53,7 @@ const useEarlyBirdStatus = () => {
 export function RegistrationFee({ form, attendingAs, sessionType }: RegistrationFeeProps) {
   const [currentFee, setCurrentFee] = useState<number>(0)
   const [days, setDays] = useState<"one" | "two">("one")
-  const [participantCount, setParticipantCount] = useState<number>(0)
   const { isEarlyBird, period } = useEarlyBirdStatus();
-
-  // Fetch current participant count
-  useEffect(() => {
-    const fetchParticipantCount = async () => {
-      try {
-        const count = await getOnlineParticipantCount();
-        setParticipantCount(count);
-      } catch (error) {
-        console.error('Error fetching participant count:', error);
-      }
-    };
-    
-    if (attendingAs === AttendingAs.PARTICIPANT && sessionType === SessionType.ONLINE) {
-      fetchParticipantCount();
-    }
-  }, [attendingAs, sessionType]);
 
   // Watch for nationality changes when in presenter mode
   const formValues = form.watch()
@@ -161,7 +140,7 @@ export function RegistrationFee({ form, attendingAs, sessionType }: Registration
     }
 
     return () => subscription.unsubscribe()
-  }, [attendingAs, sessionType, isIndonesianStudent, form, isEarlyBird, participantCount])
+  }, [attendingAs, sessionType, isIndonesianStudent, form, isEarlyBird])
 
   return (
     <div className="border-b p-6 md:p-8">
@@ -181,16 +160,7 @@ export function RegistrationFee({ form, attendingAs, sessionType }: Registration
           <h2 className="text-xl font-semibold">Registration Fee</h2>
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
-          {sessionType === SessionType.ONLINE && attendingAs === AttendingAs.PARTICIPANT ? (
-            participantCount >= MAX_FREE_ONLINE_PARTICIPANTS ? (
-              "Free registration slots are full. Regular pricing applies."
-            ) : (
-              // `${MAX_FREE_ONLINE_PARTICIPANTS - participantCount} free slots remaining!`
-               "You are classified as early bird registrants. Check your registration type and upload payment proof"
-            )
-          ) : (
-            "Select your registration type and upload payment proof"
-          )}
+          Price is calculated automatically from admin fee settings and current early bird period.
         </p>
       </div>
 
@@ -240,21 +210,18 @@ export function RegistrationFee({ form, attendingAs, sessionType }: Registration
 
       <div className="mb-6">
         <FormLabel>Bank Account Information</FormLabel>
-        <Card className="p-4">
-          <p className="text-sm font-medium">Bank: 토스뱅크 [Toss Bank]</p>
-          <p className="text-sm">Account Number: 1001-5173-6178</p>
-          <p className="text-sm">Account Holder: Mufidah Imroatul</p>
+        <Card className="p-4 space-y-3">
+          <div>
+            <p className="text-sm font-medium">Bank: 토스뱅크</p>
+            <p className="text-sm">Account Number: 1002-4253-2452</p>
+            <p className="text-sm">Account Holder: Billa Lutfiah Annisa</p>
+          </div>
+          <div className="border-t pt-3">
+            <p className="text-sm font-medium">Bank: BCA</p>
+            <p className="text-sm">Account Number: 6041144782</p>
+            <p className="text-sm">Account Holder: Lutfiah Annisa Billa</p>
+          </div>
         </Card>
-        <a 
-      href="https://docs.google.com/document/d/14Ntkx1isrp15-osYuJn0oxv9uPtEG7PcUk7I4os_IqM/edit?usp=sharing"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="text-primary hover:underline text-sm mt-2 inline-block"
-    >
-     Guide to pay with non-Korean bank account →
-    </a>
-
-
       </div>
 
       <FormField

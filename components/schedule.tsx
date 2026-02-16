@@ -30,8 +30,9 @@ const scheduleItems = [
 ]
 
 const Schedule = () => {
-  const [now, setNow] = useState(new Date())
+  const [now, setNow] = useState<Date | null>(null)
   useEffect(() => {
+    setNow(new Date())
     const timer = setInterval(() => setNow(new Date()), 60 * 1000)
     return () => clearInterval(timer)
   }, [])
@@ -39,7 +40,7 @@ const Schedule = () => {
   const { progressPercent, checkpointDates } = useMemo(() => {
     const start = new Date("2026-02-16T00:00:00+09:00").getTime()
     const end = new Date("2026-06-27T23:59:59+09:00").getTime()
-    const nowTs = now.getTime()
+    const nowTs = now?.getTime() ?? start
     const clamped = Math.min(Math.max(nowTs, start), end)
     const percent = ((clamped - start) / (end - start)) * 100
     return {
@@ -58,10 +59,10 @@ const Schedule = () => {
           {scheduleItems.map((item, index) => (
             <div key={item.title} className="relative pt-8">
               <div className={`absolute -top-3 left-0 h-7 w-7 rounded-full border-4 border-background shadow transition-colors ${
-                now.getTime() >= checkpointDates[index] ? "bg-primary" : "bg-slate-300"
+                (now?.getTime() ?? 0) >= checkpointDates[index] ? "bg-primary" : "bg-slate-300"
               }`} />
               <p className={`text-xs font-semibold uppercase tracking-wide ${
-                now.getTime() >= checkpointDates[index] ? "text-primary" : "text-muted-foreground"
+                (now?.getTime() ?? 0) >= checkpointDates[index] ? "text-primary" : "text-muted-foreground"
               }`}>{item.date}</p>
               <div className="mt-2 rounded-lg border bg-background p-3 shadow-sm min-h-24">
                 <p className="text-sm font-medium text-foreground">{item.title}</p>

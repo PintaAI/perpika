@@ -289,6 +289,8 @@ export default function Home() {
         </section>
       </Section>
 
+      <KeynoteSpeakers />
+
       <Section>
         <section id="timeline" className="py-10 sm:py-14 md:py-20 px-2 sm:px-4 bg-gradient-to-r from-sky-50 to-orange-50 scroll-mt-16">
           <div className="max-w-5xl mx-auto">
@@ -397,8 +399,6 @@ export default function Home() {
           </div>
         </section>
       </Section>
-
-      <KeynoteSpeakers />
 
       <Section>
         <section id="committee" className="py-10 sm:py-14 md:py-20 px-2 sm:px-4 bg-gradient-to-r from-slate-50 to-sky-50 scroll-mt-16">

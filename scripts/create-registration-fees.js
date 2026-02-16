@@ -1,12 +1,6 @@
 const { PrismaClient, RegistrationType } = require('@prisma/client')
 
-const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: "postgresql://neondb_owner:npg_8cVrk0aJYRZl@ep-raspy-scene-a1zrpind-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
-    }
-  }
-})
+const prisma = new PrismaClient()
 
 async function createRegistrationFee(data) {
   try {
@@ -30,43 +24,43 @@ async function main() {
     const registrationFees = [
       {
         registrationType: RegistrationType.ONLINE_PARTICIPANT_ONE_DAY,
-        regularFee: 50000,
-        earlyBirdFee: 50000,
+        regularFee: 5000,
+        earlyBirdFee: 5000,
       },
       {
         registrationType: RegistrationType.ONLINE_PARTICIPANT_TWO_DAYS,
-        regularFee: 50000,
-        earlyBirdFee: 50000,
+        regularFee: 5000,
+        earlyBirdFee: 5000,
       },
       {
         registrationType: RegistrationType.OFFLINE_PARTICIPANT_ONE_DAY,
-        regularFee: 50000,
-        earlyBirdFee: 50000,
+        regularFee: 15000,
+        earlyBirdFee: 15000,
       },
       {
         registrationType: RegistrationType.OFFLINE_PARTICIPANT_TWO_DAYS,
-        regularFee: 50000,
-        earlyBirdFee: 50000,
+        regularFee: 15000,
+        earlyBirdFee: 15000,
       },
       {
         registrationType: RegistrationType.PRESENTER_INDONESIA_STUDENT_ONLINE,
-        regularFee: 100000,
-        earlyBirdFee: 75000,
+        regularFee: 25000,
+        earlyBirdFee: 20000,
       },
       {
         registrationType: RegistrationType.PRESENTER_INDONESIA_STUDENT_OFFLINE,
-        regularFee: 100000,
-        earlyBirdFee: 75000,
+        regularFee: 50000,
+        earlyBirdFee: 40000,
       },
       {
         registrationType: RegistrationType.PRESENTER_FOREIGNER_ONLINE,
-        regularFee: 200000,
-        earlyBirdFee: 125000,
+        regularFee: 20000,
+        earlyBirdFee: 15000,
       },
       {
         registrationType: RegistrationType.PRESENTER_FOREIGNER_OFFLINE,
-        regularFee: 200000,
-        earlyBirdFee: 125000,
+        regularFee: 40000,
+        earlyBirdFee: 30000,
       },
     ]
 
