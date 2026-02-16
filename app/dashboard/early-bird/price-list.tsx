@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { updateRegistrationFee } from "../actions"
+import { updateEarlyBirdRegistrationFee } from "./actions"
 import { useState } from "react"
 import { toast } from "sonner"
 
@@ -68,7 +68,7 @@ export function PriceList({ fees }: PriceListProps) {
 
     try {
       setSavingId(id)
-      const result = await updateRegistrationFee(id, {
+      const result = await updateEarlyBirdRegistrationFee(id, {
         regularFee: row.regularFee,
         earlyBirdFee: row.earlyBirdFee,
       })
