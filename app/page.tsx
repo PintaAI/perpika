@@ -18,7 +18,6 @@ import {
   Palette,
   Briefcase,
   Landmark,
-  CreditCard,
 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -139,21 +138,6 @@ const topics = [
   { title: "Art, Culture, and Society", icon: Palette, tone: "bg-fuchsia-100 text-fuchsia-700" },
   { title: "Economy and Business", icon: Briefcase, tone: "bg-cyan-100 text-cyan-700" },
   { title: "Law, Government, and Politics", icon: Landmark, tone: "bg-violet-100 text-violet-700" },
-]
-
-const oralFees = [
-  { type: "Onsite Oral Presenter", earlyBird: "KRW 40,000 | IDR 480,000", regular: "KRW 50,000 | IDR 600,000" },
-  { type: "Online Oral Presenter", earlyBird: "KRW 20,000 | IDR 240,000", regular: "KRW 25,000 | IDR 300,000" },
-]
-
-const posterFees = [
-  { type: "Onsite Poster Presenter", earlyBird: "KRW 30,000 | IDR 360,000", regular: "KRW 40,000 | IDR 480,000" },
-  { type: "Online Poster Presenter", earlyBird: "KRW 15,000 | IDR 180,000", regular: "KRW 20,000 | IDR 240,000" },
-]
-
-const participantFees = [
-  { type: "Onsite Talk Session Participant", fee: "KRW 15,000 | IDR 180,000" },
-  { type: "Online Talk Session Participant", fee: "KRW 5,000 | IDR 60,000" },
 ]
 
 export default function Home() {
@@ -307,29 +291,6 @@ export default function Home() {
 
 
       <Section>
-        <section id="venue" className="py-10 sm:py-14 md:py-20 px-2 sm:px-4 bg-slate-50 scroll-mt-16">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex items-center gap-2 justify-center mb-6 md:mb-8">
-              <div className="p-2 bg-primary/10 rounded-full"><MapPin className="h-5 w-5 md:h-6 md:w-6 text-primary" /></div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold">Location</h2>
-            </div>
-            <AnimatedCard>
-              <div className="space-y-3">
-                <p className="text-sm sm:text-base text-muted-foreground">Korea Advanced Institute of Science and Technology (KAIST), Daejeon</p>
-                <iframe
-                  src="https://maps.google.com/maps?q=Korea%20Advanced%20Institute%20of%20Science%20and%20Technology%20(KAIST),%20Daejeon&z=16&output=embed"
-                  width="100%"
-                  height="420"
-                  style={{ border: 0 }}
-                  loading="lazy"
-                />
-              </div>
-            </AnimatedCard>
-          </div>
-        </section>
-      </Section>
-
-      <Section>
         <section id="topics" className="py-10 sm:py-14 md:py-20 px-2 sm:px-4 bg-white scroll-mt-16">
           <div className="max-w-5xl mx-auto">
             <div className="flex items-center gap-2 justify-center mb-6 md:mb-8">
@@ -354,48 +315,24 @@ export default function Home() {
       </Section>
 
       <Section>
-        <section id="fees" className="py-10 sm:py-14 md:py-20 px-2 sm:px-4 bg-slate-50 scroll-mt-16">
-          <div className="max-w-5xl mx-auto">
+        <section id="venue" className="py-10 sm:py-14 md:py-20 px-2 sm:px-4 bg-slate-50 scroll-mt-16">
+          <div className="max-w-4xl mx-auto">
             <div className="flex items-center gap-2 justify-center mb-6 md:mb-8">
-              <div className="p-2 bg-primary/10 rounded-full"><CreditCard className="h-5 w-5 md:h-6 md:w-6 text-primary" /></div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold">Registration Fee</h2>
+              <div className="p-2 bg-primary/10 rounded-full"><MapPin className="h-5 w-5 md:h-6 md:w-6 text-primary" /></div>
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold">Location</h2>
             </div>
-            <div className="grid lg:grid-cols-2 gap-4 sm:gap-5">
-              <Card className="border bg-white p-5 shadow-sm">
-                <h3 className="text-lg font-semibold mb-4 text-primary">Poster Presenter</h3>
-                <div className="space-y-4">
-                  {posterFees.map((fee) => (
-                    <div key={fee.type} className="rounded-lg border p-3">
-                      <p className="text-sm sm:text-base font-semibold">{fee.type}</p>
-                      <p className="mt-2 text-sm text-muted-foreground">Early Bird: {fee.earlyBird}</p>
-                      <p className="text-sm text-muted-foreground">Regular: {fee.regular}</p>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-
-              <Card className="border bg-white p-5 shadow-sm">
-                <h3 className="text-lg font-semibold mb-4 text-primary">Oral Presenter</h3>
-                <div className="space-y-4">
-                  {oralFees.map((fee) => (
-                    <div key={fee.type} className="rounded-lg border p-3">
-                      <p className="text-sm sm:text-base font-semibold">{fee.type}</p>
-                      <p className="mt-2 text-sm text-muted-foreground">Early Bird: {fee.earlyBird}</p>
-                      <p className="text-sm text-muted-foreground">Regular: {fee.regular}</p>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-4 sm:gap-5 mt-4">
-              {participantFees.map((fee) => (
-                <Card key={fee.type} className="border bg-white p-5 shadow-sm">
-                  <h3 className="text-base sm:text-lg font-semibold">{fee.type}</h3>
-                  <p className="mt-2 text-sm sm:text-base text-muted-foreground">{fee.fee}</p>
-                </Card>
-              ))}
-            </div>
+            <AnimatedCard>
+              <div className="space-y-3">
+                <p className="text-sm sm:text-base text-muted-foreground">Korea Advanced Institute of Science and Technology (KAIST), Daejeon</p>
+                <iframe
+                  src="https://maps.google.com/maps?q=Korea%20Advanced%20Institute%20of%20Science%20and%20Technology%20(KAIST),%20Daejeon&z=16&output=embed"
+                  width="100%"
+                  height="420"
+                  style={{ border: 0 }}
+                  loading="lazy"
+                />
+              </div>
+            </AnimatedCard>
           </div>
         </section>
       </Section>
