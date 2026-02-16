@@ -205,7 +205,7 @@ export default function Home() {
                   </Button>
                 </Link>
                 <Link
-                  href="https://docs.google.com/document/d/12he2inpCHiFIWEG_CuOo4izqokGKMSuWobf7H33YvT0/edit?tab=t.0"
+                  href="https://docs.google.com/document/d/1EPkIG_Jhl2cL9qMEdKHj0Kl8uRCR9LgV/edit?usp=sharing&ouid=109284380288306681099&rtpof=true&sd=true"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
