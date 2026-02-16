@@ -5,9 +5,23 @@ import { Input } from "@/components/ui/input"
 import { useState, useRef } from "react"
 import { toast } from "sonner"
 
-export function CreateEarlyBirdForm() {
+type EarlyBirdFormProps = {
+  periodId?: number
+  initialStartDate?: string | Date
+  initialEndDate?: string | Date
+}
+
+function toDateTimeLocal(value: string | Date | undefined) {
+  if (!value) return ""
+  const date = new Date(value)
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+  return local.toISOString().slice(0, 16)
+}
+
+function EarlyBirdForm({ periodId, initialStartDate, initialEndDate }: EarlyBirdFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const formRef = useRef<HTMLFormElement>(null) // Add form reference
+  const formRef = useRef<HTMLFormElement>(null)
+  const isEditMode = typeof periodId === "number"
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -19,11 +33,12 @@ export function CreateEarlyBirdForm() {
       const endDate = formData.get('endDate')
 
       const response = await fetch('/api/early-bird', {
-        method: 'POST',
+        method: isEditMode ? 'PUT' : 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          ...(isEditMode ? { id: periodId } : {}),
           startDate,
           endDate,
         }),
@@ -34,14 +49,12 @@ export function CreateEarlyBirdForm() {
         throw new Error(error.error || 'Failed to create early bird period')
       }
 
-      toast.success('Early bird period created successfully')
+      toast.success(isEditMode ? 'Early bird period updated successfully' : 'Early bird period created successfully')
       
-      // Reset form using the ref
-      if (formRef.current) {
+      if (formRef.current && !isEditMode) {
         formRef.current.reset()
       }
-      
-      // Refresh the page to show new data
+
       window.location.reload()
     } catch (error: any) {
       toast.error(error.message)
@@ -60,7 +73,8 @@ export function CreateEarlyBirdForm() {
           type="datetime-local"
           name="startDate"
           required
-          min={new Date().toISOString().slice(0, 16)}
+          defaultValue={toDateTimeLocal(initialStartDate)}
+          min={isEditMode ? undefined : new Date().toISOString().slice(0, 16)}
         />
       </div>
       <div>
@@ -71,12 +85,27 @@ export function CreateEarlyBirdForm() {
           type="datetime-local"
           name="endDate"
           required
-          min={new Date().toISOString().slice(0, 16)}
+          defaultValue={toDateTimeLocal(initialEndDate)}
+          min={isEditMode ? undefined : new Date().toISOString().slice(0, 16)}
         />
       </div>
       <Button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Creating..." : "Create Early Bird Period"}
+        {isSubmitting ? (isEditMode ? "Saving..." : "Creating...") : (isEditMode ? "Save Changes" : "Create Early Bird Period")}
       </Button>
     </form>
+  )
+}
+
+export function CreateEarlyBirdForm() {
+  return <EarlyBirdForm />
+}
+
+export function EditEarlyBirdForm({ periodId, initialStartDate, initialEndDate }: EarlyBirdFormProps) {
+  return (
+    <EarlyBirdForm
+      periodId={periodId}
+      initialStartDate={initialStartDate}
+      initialEndDate={initialEndDate}
+    />
   )
 }

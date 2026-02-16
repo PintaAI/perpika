@@ -5,14 +5,13 @@ import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
-import { Menu, Info, BookOpen, Users, Search, Calendar, Target } from "lucide-react"
+import { Menu, Info, BookOpen, Users, Search, MapPin } from "lucide-react"
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
   SheetTitle,
 } from "@/components/ui/sheet"
-import { IconCreditCard } from "@tabler/icons-react"
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = React.useState(false)
@@ -48,11 +47,10 @@ export function Navbar() {
   
   const navItems = [
     { name: "About ICONIK", href: "/#about", icon: Info },
-    { name: "Timeline", href: "/#timeline", icon: Calendar },
-    { name: "Topics", href: "/#topics", icon: BookOpen },
-    { name: "Registration Fee", href: "/#fees", icon: IconCreditCard },
-    { name: "Objectives", href: "/#objectives", icon: Target },
     { name: "Speakers", href: "/#speakers", icon: Users },
+    { name: "Topics", href: "/#topics", icon: BookOpen },
+    { name: "Location", href: "/#venue", icon: MapPin },
+    { name: "Committee", href: "/#committee", icon: Users },
   ]
 
   return (
