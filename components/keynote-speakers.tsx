@@ -3,7 +3,6 @@ import { Mic, User2 } from "lucide-react"
 import { motion } from "framer-motion"
 import { ReactNode } from "react"
 import Image from "next/image"
-import { cn } from "@/lib/utils"
 
 const AnimatedCard = ({ children, className }: { children: ReactNode; className?: string }) => {
   return (
@@ -32,23 +31,30 @@ const plenarySpeakers = [
     title: "Department of Cultural Anthropology, Kangwon National University",
     image: "/speakers/Prof.%20Hyung-Jun%20Kim.jpg",
   },
+  {
+    name: "Yosheph Yang, Ph.D.",
+    title: "Department of Mechanical and Biomedical Mechatronics Engineering, Kangwon National University",
+    image: "/speakers/Yoshep%20Yang%2C%20Ph.D.jpg",
+  },
 ]
 
-const SpeakerCard = ({ name, title, image, large = false }: { name: string; title: string; image: string; large?: boolean }) => (
+const SpeakerCard = ({ name, title, image, large = false }: { name: string; title: string; image?: string; large?: boolean }) => (
   <AnimatedCard className="h-full">
     <div className="flex flex-col gap-4 items-start h-full">
       <div className={`relative w-full rounded-xl overflow-hidden bg-muted border shrink-0 ${large ? "h-72 md:h-80" : "h-64 md:h-72"}`}>
-        <Image
-          src={image}
-          alt={name}
-          fill
-          className="object-cover"
-          onError={(e) => {
-            e.currentTarget.style.display = "none"
-            e.currentTarget.parentElement?.querySelector(".fallback-icon")?.classList.remove("hidden")
-          }}
-        />
-        <div className="fallback-icon hidden h-full w-full items-center justify-center flex">
+        {image ? (
+          <Image
+            src={image}
+            alt={name}
+            fill
+            className="object-cover"
+            onError={(e) => {
+              e.currentTarget.style.display = "none"
+              e.currentTarget.parentElement?.querySelector(".fallback-icon")?.classList.remove("hidden")
+            }}
+          />
+        ) : null}
+        <div className={`fallback-icon h-full w-full items-center justify-center flex ${image ? "hidden" : ""}`}>
           <User2 className="h-12 w-12 text-muted-foreground/60" />
         </div>
       </div>
@@ -61,12 +67,6 @@ const SpeakerCard = ({ name, title, image, large = false }: { name: string; titl
 )
 
 const KeynoteSpeakers = () => {
-  const columns = [
-    { ...keynoteSpeakers[0], label: "Keynote Speaker" },
-    { ...keynoteSpeakers[1], label: "Keynote Speaker" },
-    { ...plenarySpeakers[0], label: "Plenary Speaker" },
-  ]
-
   return (
     <section id="speakers" className="py-8 sm:py-12 md:py-20 px-2 sm:px-4 bg-white scroll-mt-16">
       <div className="max-w-5xl mx-auto">
@@ -76,18 +76,38 @@ const KeynoteSpeakers = () => {
           </div>
           <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold">Speakers</h2>
         </div>
-        <div className="grid lg:grid-cols-3 gap-4 items-stretch">
-          {columns.map((speaker) => (
-            <div key={speaker.name} className="h-full">
-              <p className="text-xs font-semibold uppercase tracking-wide text-primary mb-2">{speaker.label}</p>
-              <SpeakerCard
-                name={speaker.name}
-                title={speaker.title}
-                image={speaker.image}
-                large
-              />
+        <div className="space-y-8">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-primary mb-3">Keynote Speakers</p>
+            <div className="grid md:grid-cols-2 gap-4 items-stretch">
+              {keynoteSpeakers.map((speaker) => (
+                <div key={speaker.name} className="h-full">
+                  <SpeakerCard
+                    name={speaker.name}
+                    title={speaker.title}
+                    image={speaker.image}
+                    large
+                  />
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-primary mb-3">Plenary Speakers</p>
+            <div className="grid md:grid-cols-2 gap-4 items-stretch">
+              {plenarySpeakers.map((speaker) => (
+                <div key={speaker.name} className="h-full">
+                  <SpeakerCard
+                    name={speaker.name}
+                    title={speaker.title}
+                    image={speaker.image}
+                    large
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
         <p className="text-sm text-muted-foreground mt-5">*on confirmation</p>
       </div>

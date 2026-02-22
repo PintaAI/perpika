@@ -80,7 +80,6 @@ const committees = [
       "Syifa Hana Agristya - Korea University of Science and Technology (UST)",
       "Abdul Basyir - Pusan National University",
       "Zahra Sakina Maharani - Korea University",
-      "Jennifer Ilene - Dongseo University",
       "Afra Rafilah Khansa - Sunmoon University",
       "Rendy Saputra - Kangwon National University",
     ],
@@ -125,7 +124,11 @@ const committees = [
   },
   {
     title: "Logistic",
-    members: ["Ilham Darni - Korea Advanced Institute of Science and Technology (KAIST)"],
+    members: [
+      "Ilham Darni - Korea Advanced Institute of Science and Technology (KAIST)",
+      "Firda Auliannisa Chusniyah - Hannam University",
+      "Stella Maria Dyah Cahyarani - Chungbuk National University",
+    ],
   },
 ]
 
@@ -288,7 +291,6 @@ export default function Home() {
           </div>
         </section>
       </Section>
-
 
       <Section>
         <section id="topics" className="py-10 sm:py-14 md:py-20 px-2 sm:px-4 bg-white scroll-mt-16">
