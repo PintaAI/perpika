@@ -4,6 +4,11 @@ export const AttendingAs = {
   PARTICIPANT: "PARTICIPANT",
 } as const
 
+export const PresentationCategory = {
+  ORAL: "ORAL",
+  POSTER: "POSTER",
+} as const
+
 export const SessionType = {
   ONLINE: "ONLINE",
   OFFLINE: "OFFLINE",

@@ -36,6 +36,19 @@ const formatCurrency = (amount: number) => {
 }
 
 const formatRegistrationType = (type: string) => {
+  const labelMap: Record<string, string> = {
+    PRESENTER_INDONESIA_STUDENT_OFFLINE: "Onsite Oral Presenter",
+    PRESENTER_INDONESIA_STUDENT_ONLINE: "Online Oral Presenter",
+    PRESENTER_FOREIGNER_OFFLINE: "Onsite Poster Presenter",
+    PRESENTER_FOREIGNER_ONLINE: "Online Poster Presenter",
+    OFFLINE_PARTICIPANT_ONE_DAY: "Onsite Talk Session Participant (1 Day)",
+    OFFLINE_PARTICIPANT_TWO_DAYS: "Onsite Talk Session Participant (2 Days)",
+    ONLINE_PARTICIPANT_ONE_DAY: "Online Talk Session Participant (1 Day)",
+    ONLINE_PARTICIPANT_TWO_DAYS: "Online Talk Session Participant (2 Days)",
+  }
+
+  if (labelMap[type]) return labelMap[type]
+
   return type
     .split('_')
     .map(word => word.charAt(0) + word.slice(1).toLowerCase())
@@ -45,6 +58,17 @@ const formatRegistrationType = (type: string) => {
 export function PriceList({ fees }: PriceListProps) {
   const [rows, setRows] = useState(fees)
   const [savingId, setSavingId] = useState<number | null>(null)
+
+  const registrationTypeOrder: Record<string, number> = {
+    PRESENTER_INDONESIA_STUDENT_OFFLINE: 1,
+    PRESENTER_INDONESIA_STUDENT_ONLINE: 2,
+    PRESENTER_FOREIGNER_OFFLINE: 3,
+    PRESENTER_FOREIGNER_ONLINE: 4,
+    OFFLINE_PARTICIPANT_ONE_DAY: 5,
+    OFFLINE_PARTICIPANT_TWO_DAYS: 6,
+    ONLINE_PARTICIPANT_ONE_DAY: 7,
+    ONLINE_PARTICIPANT_TWO_DAYS: 8,
+  }
 
   const updateRowValue = (id: number, key: "regularFee" | "earlyBirdFee", value: string) => {
     const numberValue = Number(value)
@@ -88,18 +112,27 @@ export function PriceList({ fees }: PriceListProps) {
   return (
     <Card className="p-6">
       <h2 className="text-xl font-semibold mb-4">Daftar Harga Registrasi</h2>
+      <p className="text-sm text-muted-foreground mb-4">
+        Kategori aktif di form saat ini: Oral Presenter dan Poster Presenter (Onsite/Online).
+      </p>
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead>Tipe Registrasi</TableHead>
             <TableHead>Harga Reguler</TableHead>
             <TableHead>Harga Early Bird</TableHead>
-            <TableHead>discount</TableHead>
+            <TableHead>Diskon</TableHead>
             <TableHead>Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {rows.map((fee) => {
+          {[...rows]
+            .sort(
+              (a, b) =>
+                (registrationTypeOrder[a.registrationType] ?? 999) -
+                (registrationTypeOrder[b.registrationType] ?? 999)
+            )
+            .map((fee) => {
             const savingsAmount = fee.regularFee - fee.earlyBirdFee
             const savingsPercent = fee.regularFee > 0
               ? ((savingsAmount / fee.regularFee) * 100).toFixed(0)

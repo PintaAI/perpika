@@ -1,22 +1,21 @@
 "use client"
 
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
-import { Users, Mail, GraduationCap, FileText, Utensils, PresentationIcon } from "lucide-react"
+import { Mail, GraduationCap, FileText, PresentationIcon } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { FileUpload } from "@/components/ui/file-upload"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { UseFormReturn, useFieldArray } from "react-hook-form"
 import { z } from "zod"
-import { CurrentStatus, TopicPreference, DietaryPreference, SessionType } from "../constants"
+import { CurrentStatus, TopicPreference } from "../constants"
 import { formSchema } from "../schemas"
 
 interface PresenterFormProps {
   form: UseFormReturn<z.infer<typeof formSchema>>
-  sessionType: string | undefined
 }
 
-export function PresenterForm({ form, sessionType }: PresenterFormProps) {
+export function PresenterForm({ form }: PresenterFormProps) {
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "presenters"
@@ -272,36 +271,6 @@ export function PresenterForm({ form, sessionType }: PresenterFormProps) {
           />
         </div>
 
-        {sessionType === SessionType.OFFLINE && (
-          <div className="space-y-4">
-            <div className="flex items-center gap-3 bg-muted/50 p-2 rounded-lg mb-6">
-              <Utensils className="h-4 w-4 text-primary" />
-              <h3 className="text-sm font-medium">Additional Preferences</h3>
-            </div>
-
-            <FormField
-              control={form.control}
-              name="dietaryPreference"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-medium">Dietary Preference <span className="text-destructive">*</span></FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="bg-background">
-                        <SelectValue placeholder="Select your dietary preference" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value={DietaryPreference.VEGAN}>Vegan (Rice + Indonesian Stir-Fried Tempe)</SelectItem>
-                      <SelectItem value={DietaryPreference.HALAL}>Halal (Rice + Grilled Chicken)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        )}
       </div>
     </div>
   )

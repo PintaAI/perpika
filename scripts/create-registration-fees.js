@@ -54,13 +54,13 @@ async function main() {
       },
       {
         registrationType: RegistrationType.PRESENTER_FOREIGNER_ONLINE,
-        regularFee: 20000,
-        earlyBirdFee: 15000,
+        regularFee: 25000,
+        earlyBirdFee: 20000,
       },
       {
         registrationType: RegistrationType.PRESENTER_FOREIGNER_OFFLINE,
-        regularFee: 40000,
-        earlyBirdFee: 30000,
+        regularFee: 50000,
+        earlyBirdFee: 40000,
       },
     ]
 
