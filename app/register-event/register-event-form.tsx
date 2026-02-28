@@ -3,8 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-import { useEffect, useState, useTransition } from "react"
-import { Presentation, Users, Globe, Building, Info } from "lucide-react"
+import { useState, useTransition } from "react"
+import { Presentation, FileText, Globe, Building, Info } from "lucide-react"
 import { toast, Toaster } from "sonner"
 import { useRouter } from 'next/navigation'
 import { motion } from "framer-motion"
@@ -21,21 +21,21 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Card } from "@/components/ui/card"
 
-import { AttendingAs, SessionType } from "./constants"
+import { AttendingAs, SessionType, PresentationCategory } from "./constants"
 import { formSchema } from "./schemas"
 import { registerEvent } from "./actions"
 import { PresenterForm } from "./components/presenter-form"
-import { ParticipantForm } from "./components/participant-form"
 import { RegistrationFee } from "./components/registration-fee"
 
 export default function RegisterEventForm() {
-  const [attendingAs, setAttendingAs] = useState<string | undefined>()
+  const [presentationCategory, setPresentationCategory] = useState<string | undefined>()
   const [sessionType, setSessionType] = useState<string | undefined>()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      attendingAs: undefined,
+      attendingAs: AttendingAs.PRESENTER,
+      presentationCategory: undefined,
       sessionType: undefined,
       registrationType: undefined,
       proofOfPayment: "",
@@ -47,32 +47,15 @@ export default function RegisterEventForm() {
       topicPreference: undefined,
       presentationTitle: "",
       PaperSubmission: "",
-      dietaryPreference: undefined,
-      fullName: "",
-      gender: undefined,
-      nationality: "",
-      cityState: "",
       agreeToTerms: false,
     },
     mode: "onChange"
   })
 
-  const formState = form.formState;
-  useEffect(() => {
-    console.log('Form State:', {
-      isDirty: formState.isDirty,
-      errors: formState.errors,
-      values: form.getValues()
-    });
-  }, [formState, form]);
-
   const router = useRouter();
   const [isPending, startTransition] = useTransition()
-  const [error, setError] = useState<string | null>(null)
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-      setError(null);
-
       startTransition(async () => {
         try {
           const formData = new FormData();
@@ -125,7 +108,7 @@ export default function RegisterEventForm() {
 
             <FormField
               control={form.control}
-              name="attendingAs"
+              name="presentationCategory"
               render={({ field }) => (
                 <FormItem className="space-y-3">
                   <FormLabel className="font-medium">Attending As <span className="text-destructive">*</span></FormLabel>
@@ -133,28 +116,33 @@ export default function RegisterEventForm() {
                     <RadioGroup
                       onValueChange={(value) => {
                         field.onChange(value)
-                        setAttendingAs(value)
+                        setPresentationCategory(value)
+                        form.setValue("attendingAs", AttendingAs.PRESENTER, {
+                          shouldDirty: true,
+                          shouldTouch: true,
+                          shouldValidate: true,
+                        })
                       }}
                       value={field.value}
                       className="grid grid-cols-2 gap-4"
                     >
-                      <div className={`flex items-center space-x-3 rounded-lg border p-4 cursor-pointer transition-colors hover:bg-accent ${field.value === AttendingAs.PRESENTER ? 'border-primary bg-primary/5' : ''}`}>
+                      <div className={`flex items-center space-x-3 rounded-lg border p-4 cursor-pointer transition-colors hover:bg-accent ${field.value === PresentationCategory.ORAL ? 'border-primary bg-primary/5' : ''}`}>
                         <FormControl>
-                          <RadioGroupItem value={AttendingAs.PRESENTER} />
+                          <RadioGroupItem value={PresentationCategory.ORAL} />
                         </FormControl>
                         <div className="p-1 bg-primary/10 rounded">
                           <Presentation className="h-4 w-4 text-primary" />
                         </div>
-                        <span className="font-medium">Presenter</span>
+                        <span className="font-medium">Oral Presenter</span>
                       </div>
-                      <div className={`flex items-center space-x-3 rounded-lg border p-4 cursor-pointer transition-colors hover:bg-accent ${field.value === AttendingAs.PARTICIPANT ? 'border-primary bg-primary/5' : ''}`}>
+                      <div className={`flex items-center space-x-3 rounded-lg border p-4 cursor-pointer transition-colors hover:bg-accent ${field.value === PresentationCategory.POSTER ? 'border-primary bg-primary/5' : ''}`}>
                         <FormControl>
-                          <RadioGroupItem value={AttendingAs.PARTICIPANT} />
+                          <RadioGroupItem value={PresentationCategory.POSTER} />
                         </FormControl>
                         <div className="p-1 bg-primary/10 rounded">
-                          <Users className="h-4 w-4 text-primary" />
+                          <FileText className="h-4 w-4 text-primary" />
                         </div>
-                        <span className="font-medium">Participant</span>
+                        <span className="font-medium">Poster Presenter</span>
                       </div>
                     </RadioGroup>
                   </FormControl>
@@ -194,7 +182,7 @@ export default function RegisterEventForm() {
                         <div className="p-1 bg-primary/10 rounded">
                           <Building className="h-4 w-4 text-primary" />
                         </div>
-                        <span className="font-medium">Offline</span>
+                        <span className="font-medium">Onsite</span>
                       </div>
                     </RadioGroup>
                   </FormControl>
@@ -204,18 +192,14 @@ export default function RegisterEventForm() {
             />
           </div>
 
-          {attendingAs === AttendingAs.PRESENTER && (
-            <PresenterForm form={form} sessionType={sessionType} />
+          {presentationCategory && (
+            <PresenterForm form={form} />
           )}
 
-          {attendingAs === AttendingAs.PARTICIPANT && (
-            <ParticipantForm form={form} sessionType={sessionType} />
-          )}
-
-          {attendingAs && sessionType && (
+          {presentationCategory && sessionType && (
             <RegistrationFee 
               form={form} 
-              attendingAs={attendingAs} 
+              presentationCategory={presentationCategory}
               sessionType={sessionType} 
             />
           )}

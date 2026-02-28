@@ -12,8 +12,9 @@ import {
 } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Badge } from "@/components/ui/badge";
-import { RegistrationType } from "@prisma/client";
+import { AttendingAs, RegistrationType } from "@prisma/client";
 import Flag from 'react-world-flags';
+import { db } from "@/lib/db";
 
 // Helper function to map session type
 function getSessionTypeLabel(sessionType: string | undefined): string {
@@ -21,7 +22,7 @@ function getSessionTypeLabel(sessionType: string | undefined): string {
         case "ONLINE":
             return "Online";
         case "OFFLINE":
-            return "Offline";
+            return "Onsite";
         default:
             return sessionType || "Unknown";
     }
@@ -66,34 +67,47 @@ function formatCurrency(amount: number | null): string {
     }).format(amount);
 }
 
-// Helper function to get hardcoded registration fee
-function getRegistrationFee(registrationType: RegistrationType): number | null {
-    switch (registrationType) {
-        case RegistrationType.ONLINE_PARTICIPANT_ONE_DAY:
-            return 50000;
-        case RegistrationType.ONLINE_PARTICIPANT_TWO_DAYS:
-            return 50000;
-        case RegistrationType.OFFLINE_PARTICIPANT_ONE_DAY:
-            return 50000;
-        case RegistrationType.OFFLINE_PARTICIPANT_TWO_DAYS:
-            return 50000;
-        case RegistrationType.PRESENTER_INDONESIA_STUDENT_ONLINE:
-            return 100000;
-        case RegistrationType.PRESENTER_INDONESIA_STUDENT_OFFLINE:
-            return 100000;
-        case RegistrationType.PRESENTER_FOREIGNER_ONLINE:
-            return 200000;
-        case RegistrationType.PRESENTER_FOREIGNER_OFFLINE:
-            return 200000;
-        default:
-            return null; // Unknown registration type
-    }
+function getPresentationTypeLabel(
+  attendingAs: AttendingAs,
+  registrationType: RegistrationType
+): string {
+  if (attendingAs === AttendingAs.PARTICIPANT) {
+    return "Talk Session Participant";
+  }
+
+  switch (registrationType) {
+    case RegistrationType.PRESENTER_INDONESIA_STUDENT_ONLINE:
+    case RegistrationType.PRESENTER_INDONESIA_STUDENT_OFFLINE:
+      return "Oral Presenter";
+    case RegistrationType.PRESENTER_FOREIGNER_ONLINE:
+    case RegistrationType.PRESENTER_FOREIGNER_OFFLINE:
+      return "Poster Presenter";
+    default:
+      return "Presenter";
+  }
 }
 interface PaymentStatusTabProps {
   registrations: RegistrationWithRelations[];
 }
 
-export function PaymentStatusTab({ registrations }: PaymentStatusTabProps) {
+export async function PaymentStatusTab({ registrations }: PaymentStatusTabProps) {
+  const registrationFees = await db.registrationFee.findMany({
+    select: {
+      registrationType: true,
+      regularFee: true,
+      earlyBirdFee: true,
+    },
+  });
+
+  const feeMap = new Map(
+    registrationFees.map((fee) => [
+      fee.registrationType,
+      {
+        regularFee: fee.regularFee,
+        earlyBirdFee: fee.earlyBirdFee,
+      },
+    ])
+  );
 
     return (
     <Card>
@@ -111,6 +125,7 @@ export function PaymentStatusTab({ registrations }: PaymentStatusTabProps) {
               <TableHead>Fee (KRW)</TableHead>
               <TableHead>Nationality</TableHead>
               <TableHead>Session Type</TableHead>
+              <TableHead>Presentation</TableHead>
               <TableHead>Proof of Payment</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
@@ -123,7 +138,10 @@ export function PaymentStatusTab({ registrations }: PaymentStatusTabProps) {
               const email = registration.presenterRegistration
                 ? registration.presenterRegistration.email
                 : registration.participantRegistration?.email;
-              const fee = registration.registrationType ? getRegistrationFee(registration.registrationType) : null;
+              const feeConfig = feeMap.get(registration.registrationType);
+              const fee = feeConfig
+                ? (registration.isEarlyBird ? feeConfig.earlyBirdFee : feeConfig.regularFee)
+                : null;
               const nationality = registration.presenterRegistration
                 ? registration.presenterRegistration.presenters[0]?.nationality
                 : registration.participantRegistration?.nationality;
@@ -159,6 +177,9 @@ export function PaymentStatusTab({ registrations }: PaymentStatusTabProps) {
                   </TableCell>
                   <TableCell>
                     {getSessionTypeLabel(registration.sessionType)}
+                  </TableCell>
+                  <TableCell>
+                    {getPresentationTypeLabel(registration.attendingAs, registration.registrationType)}
                   </TableCell>
                   <TableCell>
                     {registration.proofOfPayment && (

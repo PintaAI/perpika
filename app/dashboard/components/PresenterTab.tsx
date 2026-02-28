@@ -40,7 +40,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PaperStatus } from "@prisma/client";
+import { PaperStatus, RegistrationType } from "@prisma/client";
 import { updatePaperFile, updatePaperStatus } from "../actions";
 
 
@@ -129,6 +129,19 @@ function getStatusLabel(status: string | undefined) {
   }
 }
 
+function getPresentationTypeLabel(registrationType: RegistrationType): string {
+  switch (registrationType) {
+    case RegistrationType.PRESENTER_INDONESIA_STUDENT_ONLINE:
+    case RegistrationType.PRESENTER_INDONESIA_STUDENT_OFFLINE:
+      return "Oral Presenter";
+    case RegistrationType.PRESENTER_FOREIGNER_ONLINE:
+    case RegistrationType.PRESENTER_FOREIGNER_OFFLINE:
+      return "Poster Presenter";
+    default:
+      return "Presenter";
+  }
+}
+
 interface PresenterTabProps {
   registrations: RegistrationWithRelations[];
 }
@@ -142,6 +155,7 @@ export function PresenterTab({ registrations }: PresenterTabProps) {
       "Name",
       "Email",
       "Status",
+      "Presentation Type",
       "Session",
       "Affiliation",
       "Topic",
@@ -164,6 +178,7 @@ export function PresenterTab({ registrations }: PresenterTabProps) {
           presenter?.name || "",
           details?.email || "",
           getStatusLabel(details?.currentStatus),
+          getPresentationTypeLabel(registration.registrationType),
           registration.sessionType || "",
           details?.affiliation || "",
           getTopicLabel(details?.topicPreference),
@@ -210,6 +225,7 @@ export function PresenterTab({ registrations }: PresenterTabProps) {
               
               <TableHead className="w-[200px]">Name/Email</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Presentation</TableHead>
               <TableHead>Session</TableHead>
               <TableHead>Affiliation</TableHead>
               <TableHead>Details</TableHead>
@@ -241,6 +257,7 @@ export function PresenterTab({ registrations }: PresenterTabProps) {
                       <div className="text-sm text-muted-foreground">{email}</div>
                     </TableCell>
                     <TableCell>{getStatusLabel(details?.currentStatus)}</TableCell>
+                    <TableCell>{getPresentationTypeLabel(registration.registrationType)}</TableCell>
                     <TableCell>{registration.sessionType}</TableCell>
                     <TableCell>{details?.affiliation}</TableCell>
                     <TableCell>

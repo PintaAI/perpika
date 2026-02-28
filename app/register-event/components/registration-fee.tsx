@@ -6,17 +6,16 @@ import { FileUpload } from "@/components/ui/file-upload"
 import { Button } from "@/components/ui/button"
 import { UseFormReturn } from "react-hook-form"
 import { z } from "zod"
-import { AttendingAs, SessionType, RegistrationType } from "../constants"
+import { PresentationCategory, SessionType, RegistrationType } from "../constants"
 import { formSchema } from "../schemas"
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect } from "react"
 import { Card } from "@/components/ui/card"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Checkbox } from "@/components/ui/checkbox"
 import { checkEarlyBirdStatus, getRegistrationFee } from "../actions"
 
 interface RegistrationFeeProps {
   form: UseFormReturn<z.infer<typeof formSchema>>
-  attendingAs: string | undefined
+  presentationCategory: string | undefined
   sessionType: string | undefined
 }
 
@@ -50,57 +49,27 @@ const useEarlyBirdStatus = () => {
   return earlyBirdStatus;
 };
 
-export function RegistrationFee({ form, attendingAs, sessionType }: RegistrationFeeProps) {
-  const [currentFee, setCurrentFee] = useState<number>(0)
-  const [days, setDays] = useState<"one" | "two">("one")
+export function RegistrationFee({ form, presentationCategory, sessionType }: RegistrationFeeProps) {
+  const [currentFee, setCurrentFee] = useState<number | null>(null)
+  const [feeError, setFeeError] = useState<string | null>(null)
   const { isEarlyBird, period } = useEarlyBirdStatus();
-
-  // Watch for nationality changes when in presenter mode
-  const formValues = form.watch()
-  const isIndonesianStudent = useMemo(() => {
-    if (!formValues || !attendingAs || attendingAs !== AttendingAs.PRESENTER) return true
-    
-    // Type guard to check if we have presenter form values
-    const values = formValues as z.infer<typeof formSchema> & { attendingAs: "PRESENTER" }
-    if (values.presenters?.[0]?.nationality) {
-      return values.presenters[0].nationality.toLowerCase() === 'indonesia'
-    }
-    
-    return true // Default to Indonesian pricing
-  }, [formValues, attendingAs])
 
   // Initialize registration type and handle validation
   useEffect(() => {
-    if (!attendingAs || !sessionType) return
+    if (!presentationCategory || !sessionType) return
 
     let newRegistrationType: keyof typeof RegistrationType | null = null
-    let isFreeRegistration = false
 
-    // Watch for form changes
-    const subscription = form.watch((value, { name, type }) => {
-      if (name === 'proofOfPayment' && currentFee === 0) {
-        // Clear validation errors for free registration
-        form.clearErrors('proofOfPayment')
-      }
-    })
-
-    // Simplified registration type selection based on new pricing structure
-    if (attendingAs === AttendingAs.PARTICIPANT) {
-      // All participants have the same fee regardless of online/offline or days
-      newRegistrationType = sessionType === SessionType.ONLINE
-        ? RegistrationType.ONLINE_PARTICIPANT_ONE_DAY
-        : RegistrationType.OFFLINE_PARTICIPANT_ONE_DAY
-    } else {
-      // For presenters - only depends on nationality and online/offline
-      if (sessionType === SessionType.ONLINE) {
-        newRegistrationType = isIndonesianStudent
+    if (presentationCategory === PresentationCategory.ORAL) {
+      newRegistrationType =
+        sessionType === SessionType.ONLINE
           ? RegistrationType.PRESENTER_INDONESIA_STUDENT_ONLINE
-          : RegistrationType.PRESENTER_FOREIGNER_ONLINE
-      } else {
-        newRegistrationType = isIndonesianStudent
-          ? RegistrationType.PRESENTER_INDONESIA_STUDENT_OFFLINE
+          : RegistrationType.PRESENTER_INDONESIA_STUDENT_OFFLINE
+    } else {
+      newRegistrationType =
+        sessionType === SessionType.ONLINE
+          ? RegistrationType.PRESENTER_FOREIGNER_ONLINE
           : RegistrationType.PRESENTER_FOREIGNER_OFFLINE
-      }
     }
 
     if (newRegistrationType) {
@@ -113,34 +82,25 @@ export function RegistrationFee({ form, attendingAs, sessionType }: Registration
 
       const fetchFee = async () => {
         try {
+          setFeeError(null)
+          setCurrentFee(null)
           let fee = await getRegistrationFee(newRegistrationType!, isEarlyBird);
-          
-          // Apply free registration for online participants if slots are available
-          // if (attendingAs === AttendingAs.PARTICIPANT && 
-          //     sessionType === SessionType.ONLINE && 
-          //     participantCount < MAX_FREE_ONLINE_PARTICIPANTS) {
-          //   fee = 0;
-          // }
-          
+
           if (typeof fee === 'number') {
             setCurrentFee(fee);
-            isFreeRegistration = fee === 0;
-
-            // If it's free registration, clear any existing validation errors
-            // if (isFreeRegistration) {
-            //   form.clearErrors('proofOfPayment');
-            // }
+          } else {
+            setFeeError("Registration fee is not configured yet. Please contact committee/admin.")
           }
         } catch (error) {
           console.error('Error fetching registration fee:', error);
+          setFeeError("Failed to load registration fee. Please refresh or try again.")
         }
       };
 
       fetchFee();
     }
 
-    return () => subscription.unsubscribe()
-  }, [attendingAs, sessionType, isIndonesianStudent, form, isEarlyBird])
+  }, [presentationCategory, sessionType, form, isEarlyBird])
 
   return (
     <div className="border-b p-6 md:p-8">
@@ -164,47 +124,26 @@ export function RegistrationFee({ form, attendingAs, sessionType }: Registration
         </p>
       </div>
 
-      {attendingAs === AttendingAs.PARTICIPANT && (
-        <div className="mb-6">
-          <FormLabel className="block mb-2">Number of Days</FormLabel>
-          <RadioGroup
-            defaultValue="one"
-            onValueChange={(value) => setDays(value as "one" | "two")}
-            className="flex gap-4"
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="one" id="one-day" />
-              <label htmlFor="one-day" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                1 Day
-              </label>
-            </div>
-            {/* <div className="flex items-center space-x-2">
-              <RadioGroupItem value="two" id="two-days" />
-              <label htmlFor="two-days" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                2 Days
-              </label>
-            </div> */}
-          </RadioGroup>
-        </div>
-      )}
-
       <div className="mb-6">
         <FormLabel className="flex items-center justify-between mb-2">
           <span>Registration Fee</span>
           <span className="text-primary font-medium">
-            {currentFee === 0 ? 'Free' : currentFee > 0 ? formatPrice(currentFee) : 'Calculating...'}
+            {currentFee === null ? 'Calculating...' : currentFee === 0 ? 'Free' : formatPrice(currentFee)}
           </span>
         </FormLabel>
         <div className="text-sm text-muted-foreground">
-          {attendingAs === AttendingAs.PARTICIPANT ? (
-            <p>
-              Participant ({sessionType === SessionType.ONLINE ? 'Online' : 'Offline'})
+          <p>
+            {presentationCategory === PresentationCategory.ORAL ? "Oral Presenter" : "Poster Presenter"} (
+            {sessionType === SessionType.ONLINE ? "Online" : "Onsite"})
+          </p>
+          {currentFee !== null ? (
+            <p className="mt-1">
+              IDR {(currentFee * 12).toLocaleString("id-ID")}
             </p>
-          ) : (
-            <p>
-              {isIndonesianStudent ? 'Indonesian' : 'Other Nationality'} Presenter ({sessionType === SessionType.ONLINE ? 'Online' : 'Offline'})
-            </p>
-          )}
+          ) : null}
+          {feeError ? (
+            <p className="mt-1 text-destructive">{feeError}</p>
+          ) : null}
         </div>
       </div>
 
@@ -279,13 +218,6 @@ export function RegistrationFee({ form, attendingAs, sessionType }: Registration
               <FormControl>
                 <FileUpload
                   onChange={(downloadURL) => {
-                    // Skip for free registration
-                    if (currentFee === 0) {
-                      field.onChange('');
-                      form.clearErrors('proofOfPayment');
-                      return;
-                    }
-                    
                     // Update form field value
                     field.onChange(downloadURL);
                     
