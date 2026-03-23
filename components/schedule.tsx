@@ -5,27 +5,27 @@ const scheduleItems = [
   {
     date: "16th February - 13th March 2026",
     title: "Early Bird Registration and Abstract Submission",
-    checkpoint: "2026-03-13T23:59:59+09:00",
+    checkpoint: "2026-02-16T00:00:00+09:00",
   },
   {
     date: "16th March - 30th April 2026",
     title: "Regular Registration and Abstract Submission",
-    checkpoint: "2026-04-30T23:59:59+09:00",
+    checkpoint: "2026-03-16T00:00:00+09:00",
   },
   {
     date: "11th May 2026",
     title: "Notification of Abstract Review Result",
-    checkpoint: "2026-05-11T23:59:59+09:00",
+    checkpoint: "2026-05-11T00:00:00+09:00",
   },
   {
     date: "16th May - 20th June 2026",
     title: "Registration for Talk Session Participants",
-    checkpoint: "2026-06-20T23:59:59+09:00",
+    checkpoint: "2026-05-16T00:00:00+09:00",
   },
   {
     date: "27th June 2026",
     title: "Main Event of ICONIK 2026",
-    checkpoint: "2026-06-27T23:59:59+09:00",
+    checkpoint: "2026-06-27T00:00:00+09:00",
   },
 ]
 

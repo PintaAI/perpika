@@ -81,6 +81,20 @@ export default async function PresenterDashboardPage() {
     }
   }
 
+  const getRegistrationTypeLabel = (type: string) => {
+    const map: { [key: string]: string } = {
+      "PRESENTER_INDONESIA_STUDENT_ONLINE": "Oral Presenter - Online",
+      "PRESENTER_INDONESIA_STUDENT_OFFLINE": "Oral Presenter - Onsite",
+      "PRESENTER_FOREIGNER_ONLINE": "Poster Presenter - Online",
+      "PRESENTER_FOREIGNER_OFFLINE": "Poster Presenter - Onsite",
+      "ONLINE_PARTICIPANT_ONE_DAY": "Online Participant (1 Day)",
+      "ONLINE_PARTICIPANT_TWO_DAYS": "Online Participant (2 Days)",
+      "OFFLINE_PARTICIPANT_ONE_DAY": "Onsite Participant (1 Day)",
+      "OFFLINE_PARTICIPANT_TWO_DAYS": "Onsite Participant (2 Days)",
+    }
+    return map[type] ?? type.replace(/_/g, " ")
+  }
+
   const getPaperStatusText = (status: PaperStatus) => {
     switch (status) {
       case "ACCEPTED":
@@ -172,7 +186,7 @@ export default async function PresenterDashboardPage() {
                   <span className="font-medium">Session Type</span>
                 </div>
                 <p className="text-sm pl-8 text-muted-foreground">
-                  {registration.sessionType === "ONLINE" ? "Online" : "Offline"}
+                  {registration.sessionType === "ONLINE" ? "Online" : "Onsite"}
                 </p>
               </div>
 
@@ -183,7 +197,7 @@ export default async function PresenterDashboardPage() {
                   <Building className="h-5 w-5 text-primary/70" />
                   <span className="font-medium">Registration Type</span>
                 </div>
-                <p className="text-sm pl-8 text-muted-foreground">{registration.registrationType.replace(/_/g, " ")}</p>
+                <p className="text-sm pl-8 text-muted-foreground">{getRegistrationTypeLabel(registration.registrationType)}</p>
               </div>
 
               <Separator />
