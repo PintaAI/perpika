@@ -128,6 +128,7 @@ const committees = [
       "Ilham Darni - Korea Advanced Institute of Science and Technology (KAIST)",
       "Firda Auliannisa Chusniyah - Hannam University",
       "Stella Maria Dyah Cahyarani - Chungbuk National University",
+      "Destinalutfi Citra Rahmadani - Kongju National University",
     ],
   },
 ]
@@ -180,7 +181,7 @@ export default function Home() {
                     <Calendar className="h-5 w-5 text-primary" />27th June 2026
                   </div>
                   <div className="flex items-center gap-2 text-center">
-                    <MapPin className="h-5 w-5 text-primary" />KAIST Guseong Campus, Daejeon, South Korea
+                    <MapPin className="h-5 w-5 text-primary" />Korea Advanced Institute of Science & Technology (KAIST), Daejeon, South Korea
                   </div>
                 </div>
               </div>
@@ -189,6 +190,15 @@ export default function Home() {
                 <Link href="/register-event">
                   <Button size="lg" className="bg-primary shadow-xl text-white font-semibold px-8 py-6 rounded-md">
                     <Users className="w-5 h-5 mr-2" />REGISTER NOW
+                  </Button>
+                </Link>
+                <Link
+                  href="https://docs.google.com/document/d/1myiduKBTdzymtHJ4Cb922xtFxXomxTiI/edit?usp=sharing&ouid=109284380288306681099&rtpof=true&sd=true"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button variant="outline" size="lg" className="border-2 border-primary/80 hover:bg-primary/10 text-primary shadow-lg text-base font-semibold px-8 py-6 rounded-md">
+                    Abstract Template
                   </Button>
                 </Link>
                 <Link

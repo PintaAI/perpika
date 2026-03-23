@@ -163,7 +163,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
                   <div className="flex items-center gap-1.5">
                     <Building className="h-3 w-3 text-purple-500" />
                     <span className="text-xs text-muted-foreground">
-                      {registrations.filter(r => r.sessionType === "OFFLINE").length} Offline
+                      {registrations.filter(r => r.sessionType === "OFFLINE").length} Onsite
                     </span>
                   </div>
                 </div>

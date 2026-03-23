@@ -32,9 +32,9 @@ const plenarySpeakers = [
     image: "/speakers/Prof.%20Hyung-Jun%20Kim.jpg",
   },
   {
-    name: "Yosheph Yang, Ph.D.",
-    title: "Department of Mechanical and Biomedical Mechatronics Engineering, Kangwon National University",
-    image: "/speakers/Yoshep%20Yang%2C%20Ph.D.jpg",
+    name: "Prof. Bernado Nugroho Yahya",
+    title: "Department of Industrial and Management Engineering, Hankuk University of Foreign Studies",
+    image: "/speakers/Prof.%20Bernado.jpg",
   },
 ]
 

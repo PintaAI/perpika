@@ -170,13 +170,6 @@ export function Navbar() {
           ))}
         </nav>
         <div className="ml-auto hidden md:flex items-center space-x-4">
-          <Link href="https://docs.google.com/document/d/1myiduKBTdzymtHJ4Cb922xtFxXomxTiI/edit?usp=sharing&ouid=109284380288306681099&rtpof=true&sd=true"
-            target="_blank"
-            rel="noopener noreferrer">
-            <Button variant="outline" className="transition-all duration-200 font-medium">
-            Abstract Template
-            </Button>
-          </Link>
           <Link href="/login">
             <Button className="bg-primary hover:bg-primary/90 transition-all duration-200 font-medium">
               Login

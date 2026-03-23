@@ -79,7 +79,7 @@ export function RegistrationFilters() {
             <SelectContent>
               <SelectItem value="all">Semua Sesi</SelectItem>
               <SelectItem value={SessionType.ONLINE}>Online</SelectItem>
-              <SelectItem value={SessionType.OFFLINE}>Offline</SelectItem>
+              <SelectItem value={SessionType.OFFLINE}>Onsite</SelectItem>
             </SelectContent>
           </Select>
         </div>

@@ -15,7 +15,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DeleteRegistrationButton } from "./DeleteRegistrationButton";
 import { UpdatePaymentStatusButton } from "./UpdatePaymentStatusButton";
 import { RegistrationWithRelations } from "../../types";
 import { Button } from "@/components/ui/button";
@@ -38,7 +37,6 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
 import { PaperStatus, RegistrationType } from "@prisma/client";
 import { updatePaperFile, updatePaperStatus } from "../actions";
@@ -91,16 +89,16 @@ function getTopicLabel(topic: string | undefined): string {
         return '';
     }
     const topicMap: { [key: string]: string } = {
-        "ENGINEERING": "Engineering",
-        "HEALTH_SCIENCE": "Health Science",
-        "LIFE_SCIENCE": "Life Science",
-        "EARTH_SCIENCE": "Earth Science",
+        "ENGINEERING": "Engineering and Applied Innovations",
+        "HEALTH_SCIENCE": "Life and Health Science",
+        "LIFE_SCIENCE": "Natural Sciences",
+        "EARTH_SCIENCE": "Earth, Energy, and Environment",
         "MATERIAL_SCIENCE": "Material Science",
-        "SOCIAL_LAW_POLITICAL_SCIENCE": "Social, Law & Political Science",
-        "HUMANITIES": "Humanities",
+        "SOCIAL_LAW_POLITICAL_SCIENCE": "Law, Government, and Politics",
+        "HUMANITIES": "Art, Culture, and Society",
         "SPORTS_AND_ARTS": "Sports & Arts",
-        "BUSINESS_PUBLIC_ADMINISTRATION": "Business & Public Administration",
-        "EDUCATION": "Education"
+        "BUSINESS_PUBLIC_ADMINISTRATION": "Economy and Business",
+        "EDUCATION": "Education and Human Capital"
     }
     return topicMap[topic] || '';
 }
@@ -258,7 +256,7 @@ export function PresenterTab({ registrations }: PresenterTabProps) {
                     </TableCell>
                     <TableCell>{getStatusLabel(details?.currentStatus)}</TableCell>
                     <TableCell>{getPresentationTypeLabel(registration.registrationType)}</TableCell>
-                    <TableCell>{registration.sessionType}</TableCell>
+                    <TableCell>{registration.sessionType === "OFFLINE" ? "Onsite" : "Online"}</TableCell>
                     <TableCell>{details?.affiliation}</TableCell>
                     <TableCell>
                       {registration.presenterRegistration && (
