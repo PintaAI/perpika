@@ -40,7 +40,7 @@ export default function RegisterEventPage() {
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <MapPin className="h-4 w-4 text-primary" />
-                  <span>KAIST Guseong Campus, Daejeon, South Korea</span>
+                  <span>Korea Advanced Institute of Science and Technology (KAIST), Daejeon</span>
                 </div>
               </div>
 

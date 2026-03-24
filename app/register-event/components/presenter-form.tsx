@@ -213,10 +213,10 @@ export function PresenterForm({ form }: PresenterFormProps) {
                     <SelectItem value={TopicPreference.HEALTH_SCIENCE}>Life and Health Science</SelectItem>
                     <SelectItem value={TopicPreference.LIFE_SCIENCE}>Natural Sciences</SelectItem>
                     <SelectItem value={TopicPreference.EARTH_SCIENCE}>Earth, Energy, and Environment</SelectItem>
-                    <SelectItem value={TopicPreference.MATERIAL_SCIENCE}>Material Science</SelectItem>
+                    {/* <SelectItem value={TopicPreference.MATERIAL_SCIENCE}>Material Science</SelectItem> */}
                     <SelectItem value={TopicPreference.SOCIAL_LAW_POLITICAL_SCIENCE}>Law, Government, and Politics</SelectItem>
                     <SelectItem value={TopicPreference.HUMANITIES}>Art, Culture, and Society</SelectItem>
-                    <SelectItem value={TopicPreference.SPORTS_AND_ARTS}>Sports & Arts</SelectItem>
+                    {/* <SelectItem value={TopicPreference.SPORTS_AND_ARTS}>Sports & Arts</SelectItem> */}
                     <SelectItem value={TopicPreference.BUSINESS_PUBLIC_ADMINISTRATION}>Economy and Business</SelectItem>
                     <SelectItem value={TopicPreference.EDUCATION}>Education and Human Capital</SelectItem>
                   </SelectContent>
