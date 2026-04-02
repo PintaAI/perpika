@@ -20,8 +20,16 @@ import { UpdatePaymentStatusButton } from "./UpdatePaymentStatusButton";
 import { RegistrationWithRelations } from "../../types";
 import { Badge } from "@/components/ui/badge";
 import Flag from 'react-world-flags';
-import { Button } from "@/components/ui/button";
 import { ExportButton } from "./ExportButton";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Helper function to map dietary preference
 function getDietaryLabel(dietaryPreference: string | undefined | null): string {
@@ -93,6 +101,29 @@ function getStatusLabel(status: string | undefined) {
 }
 
 export function ParticipantTab({ registrations }: ParticipantTabProps) {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
+  const handleSessionTypeChange = (registrationId: number, sessionType: string) => {
+    startTransition(async () => {
+      try {
+        const response = await fetch("/api/update-session-type", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: registrationId, sessionType }),
+        });
+        const result = await response.json();
+        if (!result.success) {
+          alert("Gagal mengubah sesi");
+        } else {
+          router.refresh();
+        }
+      } catch {
+        alert("Gagal mengubah sesi");
+      }
+    });
+  };
+
   const handleExport = () => {
     // Prepare CSV headers
     const headers = [
@@ -190,7 +221,21 @@ export function ParticipantTab({ registrations }: ParticipantTabProps) {
                       </div>
                     </TableCell>
                     <TableCell>{getStatusLabel(details?.currentStatus)}</TableCell>
-                    <TableCell>{registration.sessionType}</TableCell>
+                    <TableCell>
+                      <Select
+                        defaultValue={registration.sessionType}
+                        disabled={isPending}
+                        onValueChange={(value) => handleSessionTypeChange(registration.id, value)}
+                      >
+                        <SelectTrigger className="w-28 h-8 text-xs">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="ONLINE">Online</SelectItem>
+                          <SelectItem value="OFFLINE">Onsite</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
                     <TableCell>{details?.affiliation}</TableCell>
                     <TableCell>
                       {registration.participantRegistration && (
