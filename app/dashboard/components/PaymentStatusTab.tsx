@@ -72,7 +72,7 @@ function getPresentationTypeLabel(
   registrationType: RegistrationType
 ): string {
   if (attendingAs === AttendingAs.PARTICIPANT) {
-    return "Talk Session Participant";
+    return "Talkshow Participant";
   }
 
   switch (registrationType) {

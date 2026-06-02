@@ -133,7 +133,7 @@ export function ParticipantTab({ registrations }: ParticipantTabProps) {
       "Sesi",
       "Afiliasi",
       "Kewarganegaraan",
-      "Kota",
+      "Nomor Telepon",
       "Status Pembayaran",
       "Preferensi Diet"
     ].join(",");
@@ -147,9 +147,9 @@ export function ParticipantTab({ registrations }: ParticipantTabProps) {
         return [
           details?.fullName || "",
           details?.email || "",
-          getStatusLabel(details?.currentStatus),
+          "Talkshow Participant",
           registration.sessionType || "",
-          details?.affiliation || "",
+          details?.affiliation || "N/A",
           details?.nationality || "",
           details?.cityState || "",
           registration.paymentStatus || "",
@@ -220,7 +220,7 @@ export function ParticipantTab({ registrations }: ParticipantTabProps) {
                         {email}
                       </div>
                     </TableCell>
-                    <TableCell>{getStatusLabel(details?.currentStatus)}</TableCell>
+                    <TableCell>Talkshow Participant</TableCell>
                     <TableCell>
                       <Select
                         defaultValue={registration.sessionType}
@@ -236,29 +236,20 @@ export function ParticipantTab({ registrations }: ParticipantTabProps) {
                         </SelectContent>
                       </Select>
                     </TableCell>
-                    <TableCell>{details?.affiliation}</TableCell>
+                    <TableCell>{details?.affiliation || "N/A"}</TableCell>
                     <TableCell>
                       {registration.participantRegistration && (
                         <div className="text-sm">
-                          <div className="flex items-center gap-x-1">
-                            Kewarganegaraan:{" "}
-                            <Flag
-                              code={getCountryCode(
-                                registration.participantRegistration.nationality
-                              )}
-                              className="h-4 w-auto"
-                              fallback={
-                                <span>
-                                  {
-                                    registration.participantRegistration
-                                      .nationality
-                                  }
-                                </span>
-                              }
-                            />
+                          <div>
+                            No. Telp: {registration.participantRegistration.cityState}
                           </div>
-                          <div className="text-muted-foreground">
-                            {registration.participantRegistration.cityState}
+                          <div className="mt-1 flex items-center gap-x-1 text-muted-foreground">
+                            Nationality:{" "}
+                            <Flag
+                              code={getCountryCode(registration.participantRegistration.nationality)}
+                              className="h-4 w-auto"
+                              fallback={<span>{registration.participantRegistration.nationality}</span>}
+                            />
                           </div>
                         </div>
                       )}

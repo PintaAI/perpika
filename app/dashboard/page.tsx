@@ -63,6 +63,10 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     redirect("/presenter-dashboard");
   }
 
+  if (user.role === Role.USER) {
+    redirect("/");
+  }
+
   // Get searchParams values
     const params = await Promise.resolve(searchParams)
 

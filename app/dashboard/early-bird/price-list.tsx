@@ -41,10 +41,10 @@ const formatRegistrationType = (type: string) => {
     PRESENTER_INDONESIA_STUDENT_ONLINE: "Online Oral Presenter",
     PRESENTER_FOREIGNER_OFFLINE: "Onsite Poster Presenter",
     PRESENTER_FOREIGNER_ONLINE: "Online Poster Presenter",
-    OFFLINE_PARTICIPANT_ONE_DAY: "Onsite Talk Session Participant (1 Day)",
-    OFFLINE_PARTICIPANT_TWO_DAYS: "Onsite Talk Session Participant (2 Days)",
-    ONLINE_PARTICIPANT_ONE_DAY: "Online Talk Session Participant (1 Day)",
-    ONLINE_PARTICIPANT_TWO_DAYS: "Online Talk Session Participant (2 Days)",
+    OFFLINE_PARTICIPANT_ONE_DAY: "Onsite Talkshow Participant (1 Day)",
+    OFFLINE_PARTICIPANT_TWO_DAYS: "Onsite Talkshow Participant (2 Days)",
+    ONLINE_PARTICIPANT_ONE_DAY: "Online Talkshow Participant (1 Day)",
+    ONLINE_PARTICIPANT_TWO_DAYS: "Online Talkshow Participant (2 Days)",
   }
 
   if (labelMap[type]) return labelMap[type]
