@@ -1,7 +1,7 @@
 'use server'
 
 import { db } from '@/lib/db'
-import { RegistrationType } from './constants'
+import { AttendingAs, CurrentStatus, Gender, RegistrationType } from './constants'
 import { formSchema } from './schemas'
 import { revalidatePath } from 'next/cache'
 import bcrypt from 'bcryptjs'
@@ -56,6 +56,35 @@ export async function registerEvent(formData: FormData) {
 
     // Check early bird status
     const { isEarlyBird, period } = await checkEarlyBirdStatus();
+
+    if (validatedData.attendingAs === AttendingAs.PARTICIPANT) {
+      await db.registration.create({
+        data: {
+          attendingAs: validatedData.attendingAs,
+          sessionType: validatedData.sessionType,
+          registrationType: validatedData.registrationType,
+          proofOfPayment: validatedData.proofOfPayment,
+          paymentStatus: 'PENDING',
+          isEarlyBird,
+          periodId: period?.id,
+          participantRegistration: {
+            create: {
+              fullName: validatedData.fullName,
+              gender: Gender.MALE,
+              nationality: validatedData.nationality,
+              cityState: validatedData.phoneNumber,
+              email: validatedData.email,
+              currentStatus: CurrentStatus.OTHER,
+              affiliation: validatedData.affiliation,
+            }
+          }
+        },
+      })
+
+      revalidatePath('/register-event');
+      revalidatePath('/dashboard');
+      return { success: true };
+    }
 
     const hashedPassword = await bcrypt.hash(validatedData.password, 10)
 

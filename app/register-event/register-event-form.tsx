@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { useState, useTransition } from "react"
-import { Presentation, FileText, Globe, Building, Info } from "lucide-react"
+import { Presentation, FileText, Globe, Building, Info, Users } from "lucide-react"
 import { toast, Toaster } from "sonner"
 import { useRouter } from 'next/navigation'
 import { motion } from "framer-motion"
@@ -25,16 +25,21 @@ import { AttendingAs, SessionType, PresentationCategory } from "./constants"
 import { formSchema } from "./schemas"
 import { registerEvent } from "./actions"
 import { PresenterForm } from "./components/presenter-form"
+import { ParticipantForm } from "./components/participant-form"
 import { RegistrationFee } from "./components/registration-fee"
 
 export default function RegisterEventForm() {
+  const [attendingAs, setAttendingAs] = useState<string | undefined>()
   const [presentationCategory, setPresentationCategory] = useState<string | undefined>()
   const [sessionType, setSessionType] = useState<string | undefined>()
+  const showPresenterClosedMessage = () => {
+    toast.info("Maaf, pendaftaran Oral Presenter dan Poster Presenter sudah ditutup.")
+  }
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      attendingAs: AttendingAs.PRESENTER,
+      attendingAs: undefined,
       presentationCategory: undefined,
       sessionType: undefined,
       registrationType: undefined,
@@ -47,6 +52,9 @@ export default function RegisterEventForm() {
       topicPreference: undefined,
       presentationTitle: "",
       PaperSubmission: "",
+      fullName: "",
+      nationality: "",
+      phoneNumber: "",
       agreeToTerms: false,
     },
     mode: "onChange"
@@ -108,41 +116,92 @@ export default function RegisterEventForm() {
 
             <FormField
               control={form.control}
-              name="presentationCategory"
+              name="attendingAs"
               render={({ field }) => (
                 <FormItem className="space-y-3">
                   <FormLabel className="font-medium">Attending As <span className="text-destructive">*</span></FormLabel>
                   <FormControl>
                     <RadioGroup
                       onValueChange={(value) => {
-                        field.onChange(value)
-                        setPresentationCategory(value)
-                        form.setValue("attendingAs", AttendingAs.PRESENTER, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        })
+                        if (value === PresentationCategory.ORAL || value === PresentationCategory.POSTER) {
+                          showPresenterClosedMessage()
+                          return
+                        }
+
+                        if (value === AttendingAs.PARTICIPANT) {
+                          field.onChange(AttendingAs.PARTICIPANT)
+                          setAttendingAs(AttendingAs.PARTICIPANT)
+                          setPresentationCategory(undefined)
+                          form.setValue("presentationCategory", undefined, { shouldValidate: true })
+                          return
+                        }
                       }}
-                      value={field.value}
-                      className="grid grid-cols-2 gap-4"
+                      value={field.value === AttendingAs.PARTICIPANT ? AttendingAs.PARTICIPANT : presentationCategory}
+                      className="grid gap-4"
                     >
-                      <div className={`flex items-center space-x-3 rounded-lg border p-4 cursor-pointer transition-colors hover:bg-accent ${field.value === PresentationCategory.ORAL ? 'border-primary bg-primary/5' : ''}`}>
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        onClick={showPresenterClosedMessage}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault()
+                            showPresenterClosedMessage()
+                          }
+                        }}
+                        className="flex min-h-24 items-start gap-5 rounded-lg border border-muted bg-muted/30 p-6 text-left opacity-75 transition-colors hover:bg-muted/50"
+                      >
                         <FormControl>
-                          <RadioGroupItem value={PresentationCategory.ORAL} />
+                          <RadioGroupItem id="attending-oral" value={PresentationCategory.ORAL} disabled />
                         </FormControl>
-                        <div className="p-1 bg-primary/10 rounded">
-                          <Presentation className="h-4 w-4 text-primary" />
+                        <div className="p-2 bg-primary/10 rounded">
+                          <Presentation className="h-5 w-5 text-primary" />
                         </div>
-                        <span className="font-medium">Oral Presenter</span>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="text-base font-medium">Oral Presenter</span>
+                            <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-medium text-destructive">Closed</span>
+                          </div>
+                          <p className="mt-2 text-sm text-muted-foreground">Maaf, pendaftaran sudah ditutup.</p>
+                        </div>
                       </div>
-                      <div className={`flex items-center space-x-3 rounded-lg border p-4 cursor-pointer transition-colors hover:bg-accent ${field.value === PresentationCategory.POSTER ? 'border-primary bg-primary/5' : ''}`}>
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        onClick={showPresenterClosedMessage}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault()
+                            showPresenterClosedMessage()
+                          }
+                        }}
+                        className="flex min-h-24 items-start gap-5 rounded-lg border border-muted bg-muted/30 p-6 text-left opacity-75 transition-colors hover:bg-muted/50"
+                      >
                         <FormControl>
-                          <RadioGroupItem value={PresentationCategory.POSTER} />
+                          <RadioGroupItem id="attending-poster" value={PresentationCategory.POSTER} disabled />
                         </FormControl>
-                        <div className="p-1 bg-primary/10 rounded">
-                          <FileText className="h-4 w-4 text-primary" />
+                        <div className="p-2 bg-primary/10 rounded">
+                          <FileText className="h-5 w-5 text-primary" />
                         </div>
-                        <span className="font-medium">Poster Presenter</span>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="text-base font-medium">Poster Presenter</span>
+                            <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-medium text-destructive">Closed</span>
+                          </div>
+                          <p className="mt-2 text-sm text-muted-foreground">Maaf, pendaftaran sudah ditutup.</p>
+                        </div>
+                      </div>
+                      <div className={`flex min-h-24 items-start gap-5 rounded-lg border p-6 cursor-pointer transition-colors hover:bg-accent ${field.value === AttendingAs.PARTICIPANT ? 'border-primary bg-primary/5' : ''}`}>
+                        <FormControl>
+                          <RadioGroupItem id="attending-talkshow" value={AttendingAs.PARTICIPANT} />
+                        </FormControl>
+                        <div className="p-2 bg-primary/10 rounded">
+                          <Users className="h-5 w-5 text-primary" />
+                        </div>
+                        <label htmlFor="attending-talkshow" className="min-w-0 flex-1 cursor-pointer">
+                          <span className="text-base font-medium">Talkshow Participant</span>
+                          <span className="mt-2 block text-sm text-muted-foreground">Available for online and onsite sessions.</span>
+                        </label>
                       </div>
                     </RadioGroup>
                   </FormControl>
@@ -192,13 +251,18 @@ export default function RegisterEventForm() {
             />
           </div>
 
-          {presentationCategory && (
+          {attendingAs === AttendingAs.PRESENTER && presentationCategory && (
             <PresenterForm form={form} />
           )}
 
-          {presentationCategory && sessionType && (
+          {attendingAs === AttendingAs.PARTICIPANT && (
+            <ParticipantForm form={form} />
+          )}
+
+          {attendingAs && sessionType && (
             <RegistrationFee 
               form={form} 
+              attendingAs={attendingAs}
               presentationCategory={presentationCategory}
               sessionType={sessionType} 
             />

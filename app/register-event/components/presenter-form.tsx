@@ -7,12 +7,10 @@ import { FileUpload } from "@/components/ui/file-upload"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { UseFormReturn, useFieldArray } from "react-hook-form"
-import { z } from "zod"
 import { CurrentStatus, TopicPreference } from "../constants"
-import { formSchema } from "../schemas"
 
 interface PresenterFormProps {
-  form: UseFormReturn<z.infer<typeof formSchema>>
+  form: UseFormReturn<any>
 }
 
 export function PresenterForm({ form }: PresenterFormProps) {

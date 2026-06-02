@@ -12,6 +12,7 @@ const AnimatedCard = ({ children, className }: { children: ReactNode; className?
   )
 }
 
+/*
 const keynoteSpeakers = [
   {
     name: "Anies Rasyid Baswedan, S.E., M.P.P., Ph.D.",
@@ -24,6 +25,7 @@ const keynoteSpeakers = [
     image: "/speakers/Prof.%20Brian%20Yuliarto.jpg",
   },
 ]
+*/
 
 const plenarySpeakers = [
   {
@@ -76,6 +78,7 @@ const KeynoteSpeakers = () => {
           </div>
           <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold">Speakers</h2>
         </div>
+        {/*
         <div className="space-y-8">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-primary mb-3">Keynote Speakers</p>
@@ -92,23 +95,25 @@ const KeynoteSpeakers = () => {
               ))}
             </div>
           </div>
-
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-primary mb-3">Plenary Speakers</p>
-            <div className="grid md:grid-cols-2 gap-4 items-stretch">
-              {plenarySpeakers.map((speaker) => (
-                <div key={speaker.name} className="h-full">
-                  <SpeakerCard
-                    name={speaker.name}
-                    title={speaker.title}
-                    image={speaker.image}
-                    large
-                  />
-                </div>
-              ))}
-            </div>
+        */}
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-primary mb-3">Plenary Speakers</p>
+          <div className="grid md:grid-cols-2 gap-4 items-stretch">
+            {plenarySpeakers.map((speaker) => (
+              <div key={speaker.name} className="h-full">
+                <SpeakerCard
+                  name={speaker.name}
+                  title={speaker.title}
+                  image={speaker.image}
+                  large
+                />
+              </div>
+            ))}
           </div>
         </div>
+        {/*
+        </div>
+        */}
         <p className="text-sm text-muted-foreground mt-5">*on confirmation</p>
       </div>
     </section>

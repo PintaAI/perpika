@@ -5,16 +5,15 @@ import { CreditCard } from "lucide-react"
 import { FileUpload } from "@/components/ui/file-upload"
 import { Button } from "@/components/ui/button"
 import { UseFormReturn } from "react-hook-form"
-import { z } from "zod"
-import { PresentationCategory, SessionType, RegistrationType } from "../constants"
-import { formSchema } from "../schemas"
+import { AttendingAs, PresentationCategory, SessionType, RegistrationType } from "../constants"
 import { useState, useEffect } from "react"
 import { Card } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { checkEarlyBirdStatus, getRegistrationFee } from "../actions"
 
 interface RegistrationFeeProps {
-  form: UseFormReturn<z.infer<typeof formSchema>>
+  form: UseFormReturn<any>
+  attendingAs: string | undefined
   presentationCategory: string | undefined
   sessionType: string | undefined
 }
@@ -49,18 +48,25 @@ const useEarlyBirdStatus = () => {
   return earlyBirdStatus;
 };
 
-export function RegistrationFee({ form, presentationCategory, sessionType }: RegistrationFeeProps) {
+export function RegistrationFee({ form, attendingAs, presentationCategory, sessionType }: RegistrationFeeProps) {
   const [currentFee, setCurrentFee] = useState<number | null>(null)
   const [feeError, setFeeError] = useState<string | null>(null)
   const { isEarlyBird, period } = useEarlyBirdStatus();
 
   // Initialize registration type and handle validation
   useEffect(() => {
-    if (!presentationCategory || !sessionType) return
+    if (!attendingAs || !sessionType) return
 
     let newRegistrationType: keyof typeof RegistrationType | null = null
 
-    if (presentationCategory === PresentationCategory.ORAL) {
+    if (attendingAs === AttendingAs.PARTICIPANT) {
+      newRegistrationType =
+        sessionType === SessionType.ONLINE
+          ? RegistrationType.ONLINE_PARTICIPANT_ONE_DAY
+          : RegistrationType.OFFLINE_PARTICIPANT_ONE_DAY
+    } else if (!presentationCategory) {
+      return
+    } else if (presentationCategory === PresentationCategory.ORAL) {
       newRegistrationType =
         sessionType === SessionType.ONLINE
           ? RegistrationType.PRESENTER_INDONESIA_STUDENT_ONLINE
@@ -100,7 +106,7 @@ export function RegistrationFee({ form, presentationCategory, sessionType }: Reg
       fetchFee();
     }
 
-  }, [presentationCategory, sessionType, form, isEarlyBird])
+  }, [attendingAs, presentationCategory, sessionType, form, isEarlyBird])
 
   return (
     <div className="border-b p-6 md:p-8">
@@ -133,7 +139,11 @@ export function RegistrationFee({ form, presentationCategory, sessionType }: Reg
         </FormLabel>
         <div className="text-sm text-muted-foreground">
           <p>
-            {presentationCategory === PresentationCategory.ORAL ? "Oral Presenter" : "Poster Presenter"} (
+            {attendingAs === AttendingAs.PARTICIPANT
+              ? "Talkshow Participant"
+              : presentationCategory === PresentationCategory.ORAL
+                ? "Oral Presenter"
+                : "Poster Presenter"} (
             {sessionType === SessionType.ONLINE ? "Online" : "Onsite"})
           </p>
           {currentFee !== null ? (

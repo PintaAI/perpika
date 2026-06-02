@@ -8,15 +8,13 @@ import {
   PresentationCategory,
 } from "./constants"
 
-export const baseSchema = z.object({
-  attendingAs: z.literal(AttendingAs.PRESENTER),
-  presentationCategory: z.enum([PresentationCategory.ORAL, PresentationCategory.POSTER], {
-    required_error: "Please select presentation category",
-  }),
+const commonSchema = z.object({
   sessionType: z.enum([SessionType.ONLINE, SessionType.OFFLINE], {
     required_error: "Please select your session type",
   }),
   registrationType: z.enum([
+    RegistrationType.ONLINE_PARTICIPANT_ONE_DAY,
+    RegistrationType.OFFLINE_PARTICIPANT_ONE_DAY,
     RegistrationType.PRESENTER_INDONESIA_STUDENT_ONLINE,
     RegistrationType.PRESENTER_INDONESIA_STUDENT_OFFLINE,
     RegistrationType.PRESENTER_FOREIGNER_ONLINE,
@@ -27,8 +25,8 @@ export const baseSchema = z.object({
   proofOfPayment: z.string().refine((val) => val.startsWith("http"), {
     message: "Payment proof must be uploaded",
   }),
-  agreeToTerms: z.boolean({
-    required_error: "You must agree to the terms and conditions",
+  agreeToTerms: z.boolean().refine((value) => value, {
+    message: "You must agree to the terms and conditions",
   }),
 })
 
@@ -37,7 +35,11 @@ const presenterSchema = z.object({
   nationality: z.string().min(1, { message: "Presenter nationality is required" }),
 })
 
-export const presenterRegistrationSchema = z.object({
+const presenterRegistrationSchema = z.object({
+  attendingAs: z.literal(AttendingAs.PRESENTER),
+  presentationCategory: z.enum([PresentationCategory.ORAL, PresentationCategory.POSTER], {
+    required_error: "Please select presentation category",
+  }),
   presenters: z.array(presenterSchema)
     .min(1, { message: "At least one presenter is required" })
     .max(3, { message: "Maximum of three presenters allowed" }),
@@ -71,7 +73,17 @@ export const presenterRegistrationSchema = z.object({
   PaperSubmission: z.string().min(1, { message: "Paper must be uploaded" }),
 })
 
-export const formSchema = z.object({
-  ...baseSchema.shape,
-  ...presenterRegistrationSchema.shape,
+const participantRegistrationSchema = z.object({
+  attendingAs: z.literal(AttendingAs.PARTICIPANT),
+  presentationCategory: z.string().optional(),
+  fullName: z.string().min(1, { message: "Name is required" }),
+  nationality: z.string().min(1, { message: "Nationality is required" }),
+  email: z.string().email({ message: "Invalid email format" }),
+  phoneNumber: z.string().min(1, { message: "Phone number is required" }),
+  affiliation: z.string().min(1, { message: "Affiliation is required" }),
 })
+
+export const formSchema = z.discriminatedUnion("attendingAs", [
+  commonSchema.merge(presenterRegistrationSchema),
+  commonSchema.merge(participantRegistrationSchema),
+])
