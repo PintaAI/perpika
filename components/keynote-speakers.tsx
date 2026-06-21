@@ -25,7 +25,7 @@ const keynoteSpeakers = [
   {
     name: "Ali Andika Wardhana",
     title: ["Deputy Chief of Mission, The Embassy of the Republic of Indonesia in Seoul"],
-    image: "/speakers/AliAndikaWardanapng",
+    image: "/speakers/AliAndikaWardana.png",
   },
 ]
 
