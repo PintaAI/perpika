@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-import { useState, useTransition } from "react"
+import { useEffect, useState, useTransition } from "react"
 import { Presentation, FileText, Globe, Building, Info, Users } from "lucide-react"
 import { toast, Toaster } from "sonner"
 import { useRouter } from 'next/navigation'
@@ -27,14 +27,26 @@ import { registerEvent } from "./actions"
 import { PresenterForm } from "./components/presenter-form"
 import { ParticipantForm } from "./components/participant-form"
 import { RegistrationFee } from "./components/registration-fee"
+import { TALKSHOW_PARTICIPANT_DEADLINES, isTalkshowParticipantClosed } from "./deadlines"
 
 export default function RegisterEventForm() {
   const [attendingAs, setAttendingAs] = useState<string | undefined>()
   const [presentationCategory, setPresentationCategory] = useState<string | undefined>()
   const [sessionType, setSessionType] = useState<string | undefined>()
+  const [currentTime, setCurrentTime] = useState<Date | null>(null)
   const showPresenterClosedMessage = () => {
     toast.info("Maaf, pendaftaran Oral Presenter dan Poster Presenter sudah ditutup.")
   }
+  const showParticipantClosedMessage = (type: string) => {
+    const deadline = TALKSHOW_PARTICIPANT_DEADLINES[type as keyof typeof TALKSHOW_PARTICIPANT_DEADLINES]
+    toast.info(`Pendaftaran ${deadline.label} Talkshow Participant ditutup pada ${deadline.displayDate}.`)
+  }
+
+  useEffect(() => {
+    setCurrentTime(new Date())
+    const timer = setInterval(() => setCurrentTime(new Date()), 60 * 1000)
+    return () => clearInterval(timer)
+  }, [])
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -62,8 +74,20 @@ export default function RegisterEventForm() {
 
   const router = useRouter();
   const [isPending, startTransition] = useTransition()
+  const isSelectedParticipantSessionClosed =
+    attendingAs === AttendingAs.PARTICIPANT &&
+    currentTime !== null &&
+    isTalkshowParticipantClosed(sessionType, currentTime)
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
+      if (
+        values.attendingAs === AttendingAs.PARTICIPANT &&
+        isTalkshowParticipantClosed(values.sessionType)
+      ) {
+        showParticipantClosedMessage(values.sessionType)
+        return
+      }
+
       startTransition(async () => {
         try {
           const formData = new FormData();
@@ -219,29 +243,100 @@ export default function RegisterEventForm() {
                   <FormControl>
                     <RadioGroup
                       onValueChange={(value) => {
+                        if (
+                          attendingAs === AttendingAs.PARTICIPANT &&
+                          currentTime !== null &&
+                          isTalkshowParticipantClosed(value, currentTime)
+                        ) {
+                          showParticipantClosedMessage(value)
+                          return
+                        }
+
                         field.onChange(value)
                         setSessionType(value)
                       }}
                       value={field.value}
                       className="grid grid-cols-2 gap-4"
                     >
-                      <div className={`flex items-center space-x-3 rounded-lg border p-4 cursor-pointer transition-colors hover:bg-accent ${field.value === SessionType.ONLINE ? 'border-primary bg-primary/5' : ''}`}>
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => {
+                          if (
+                            attendingAs === AttendingAs.PARTICIPANT &&
+                            currentTime !== null &&
+                            isTalkshowParticipantClosed(SessionType.ONLINE, currentTime)
+                          ) {
+                            showParticipantClosedMessage(SessionType.ONLINE)
+                          }
+                        }}
+                        className={`flex items-start gap-3 rounded-lg border p-4 transition-colors ${
+                          attendingAs === AttendingAs.PARTICIPANT &&
+                          currentTime !== null &&
+                          isTalkshowParticipantClosed(SessionType.ONLINE, currentTime)
+                            ? 'cursor-not-allowed bg-muted/30 opacity-70'
+                            : 'cursor-pointer hover:bg-accent'
+                        } ${field.value === SessionType.ONLINE ? 'border-primary bg-primary/5' : ''}`}
+                      >
                         <FormControl>
-                          <RadioGroupItem value={SessionType.ONLINE} />
+                          <RadioGroupItem
+                            value={SessionType.ONLINE}
+                            disabled={
+                              attendingAs === AttendingAs.PARTICIPANT &&
+                              currentTime !== null &&
+                              isTalkshowParticipantClosed(SessionType.ONLINE, currentTime)
+                            }
+                          />
                         </FormControl>
                         <div className="p-1 bg-primary/10 rounded">
                           <Globe className="h-4 w-4 text-primary" />
                         </div>
-                        <span className="font-medium">Online</span>
+                        <div>
+                          <span className="font-medium">Online</span>
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            Closes on {TALKSHOW_PARTICIPANT_DEADLINES[SessionType.ONLINE].displayDate}
+                          </p>
+                        </div>
                       </div>
-                      <div className={`flex items-center space-x-3 rounded-lg border p-4 cursor-pointer transition-colors hover:bg-accent ${field.value === SessionType.OFFLINE ? 'border-primary bg-primary/5' : ''}`}>
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => {
+                          if (
+                            attendingAs === AttendingAs.PARTICIPANT &&
+                            currentTime !== null &&
+                            isTalkshowParticipantClosed(SessionType.OFFLINE, currentTime)
+                          ) {
+                            showParticipantClosedMessage(SessionType.OFFLINE)
+                          }
+                        }}
+                        className={`flex items-start gap-3 rounded-lg border p-4 transition-colors ${
+                          attendingAs === AttendingAs.PARTICIPANT &&
+                          currentTime !== null &&
+                          isTalkshowParticipantClosed(SessionType.OFFLINE, currentTime)
+                            ? 'cursor-not-allowed bg-muted/30 opacity-70'
+                            : 'cursor-pointer hover:bg-accent'
+                        } ${field.value === SessionType.OFFLINE ? 'border-primary bg-primary/5' : ''}`}
+                      >
                         <FormControl>
-                          <RadioGroupItem value={SessionType.OFFLINE} />
+                          <RadioGroupItem
+                            value={SessionType.OFFLINE}
+                            disabled={
+                              attendingAs === AttendingAs.PARTICIPANT &&
+                              currentTime !== null &&
+                              isTalkshowParticipantClosed(SessionType.OFFLINE, currentTime)
+                            }
+                          />
                         </FormControl>
                         <div className="p-1 bg-primary/10 rounded">
                           <Building className="h-4 w-4 text-primary" />
                         </div>
-                        <span className="font-medium">Onsite</span>
+                        <div>
+                          <span className="font-medium">Onsite</span>
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            Closes on {TALKSHOW_PARTICIPANT_DEADLINES[SessionType.OFFLINE].displayDate}
+                          </p>
+                        </div>
                       </div>
                     </RadioGroup>
                   </FormControl>
@@ -272,7 +367,7 @@ export default function RegisterEventForm() {
             <Button 
               type="submit" 
               className="w-full"
-              disabled={!form.formState.isValid || isPending}
+              disabled={!form.formState.isValid || isPending || isSelectedParticipantSessionClosed}
             >
               {isPending ? "Submitting..." : "Register Event"}
             </Button>

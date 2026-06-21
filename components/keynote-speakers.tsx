@@ -12,35 +12,37 @@ const AnimatedCard = ({ children, className }: { children: ReactNode; className?
   )
 }
 
-/*
 const keynoteSpeakers = [
   {
-    name: "Anies Rasyid Baswedan, S.E., M.P.P., Ph.D.",
-    title: "Governor of Jakarta (2017-2022); Minister of Education and Culture (2014-2016)",
-    image: "/speakers/Anies%20Rasyid%20Baswedan.jpeg",
+    name: "Thomas Trikasih Lembong",
+    title: [
+      "Indonesian Minister of Trade (2015-2016)",
+      "Head of Indonesia's Investment Coordinating Board (2016-2019)",
+      "Advisory Board Member of the Institute for International Strategic Studies (IISS)",
+    ],
+    image: "/speakers/TomLembong.png",
   },
   {
-    name: "Prof. Brian Yuliarto, S.T., M.Eng., Ph.D.",
-    title: "Minister of Higher Education, Science, and Technology (2025-now)",
-    image: "/speakers/Prof.%20Brian%20Yuliarto.jpg",
+    name: "Ali Andika Wardhana",
+    title: ["Deputy Chief of Mission, The Embassy of the Republic of Indonesia in Seoul"],
+    image: "/speakers/AliAndikaWardanapng",
   },
 ]
-*/
 
 const plenarySpeakers = [
   {
     name: "Prof. Hyung-Jun Kim",
-    title: "Department of Cultural Anthropology, Kangwon National University",
-    image: "/speakers/Prof.%20Hyung-Jun%20Kim.jpg",
+    title: ["Department of Cultural Anthropology, Kangwon National University"],
+    image: "/speakers/ProfHyungJunKim.png",
   },
   {
     name: "Prof. Bernado Nugroho Yahya",
-    title: "Department of Industrial and Management Engineering, Hankuk University of Foreign Studies",
-    image: "/speakers/Prof.%20Bernado.jpg",
+    title: ["Department of Industrial and Management Engineering, Hankuk University of Foreign Studies"],
+    image: "/speakers/ProfBernado.png",
   },
 ]
 
-const SpeakerCard = ({ name, title, image, large = false }: { name: string; title: string; image?: string; large?: boolean }) => (
+const SpeakerCard = ({ name, title, image, large = false }: { name: string; title: string[]; image?: string; large?: boolean }) => (
   <AnimatedCard className="h-full">
     <div className="flex flex-col gap-4 items-start h-full">
       <div className={`relative w-full rounded-xl overflow-hidden bg-muted border shrink-0 ${large ? "h-72 md:h-80" : "h-64 md:h-72"}`}>
@@ -61,8 +63,12 @@ const SpeakerCard = ({ name, title, image, large = false }: { name: string; titl
         </div>
       </div>
       <div className="w-full min-h-28 flex flex-col">
-        <h4 className="text-lg sm:text-xl font-semibold leading-snug">{name}*</h4>
-        <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{title}</p>
+        <h4 className="text-lg sm:text-xl font-semibold leading-snug">{name}</h4>
+        <div className="mt-2 space-y-1 text-sm text-muted-foreground leading-relaxed">
+          {title.map((line) => (
+            <p key={line}>{line}</p>
+          ))}
+        </div>
       </div>
     </div>
   </AnimatedCard>
@@ -78,7 +84,6 @@ const KeynoteSpeakers = () => {
           </div>
           <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold">Speakers</h2>
         </div>
-        {/*
         <div className="space-y-8">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-primary mb-3">Keynote Speakers</p>
@@ -95,26 +100,23 @@ const KeynoteSpeakers = () => {
               ))}
             </div>
           </div>
-        */}
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-primary mb-3">Plenary Speakers</p>
-          <div className="grid md:grid-cols-2 gap-4 items-stretch">
-            {plenarySpeakers.map((speaker) => (
-              <div key={speaker.name} className="h-full">
-                <SpeakerCard
-                  name={speaker.name}
-                  title={speaker.title}
-                  image={speaker.image}
-                  large
-                />
-              </div>
-            ))}
+
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-primary mb-3">Plenary Speakers</p>
+            <div className="grid md:grid-cols-2 gap-4 items-stretch">
+              {plenarySpeakers.map((speaker) => (
+                <div key={speaker.name} className="h-full">
+                  <SpeakerCard
+                    name={speaker.name}
+                    title={speaker.title}
+                    image={speaker.image}
+                    large
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-        {/*
-        </div>
-        */}
-        <p className="text-sm text-muted-foreground mt-5">*on confirmation</p>
       </div>
     </section>
   )

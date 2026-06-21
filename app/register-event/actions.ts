@@ -5,6 +5,7 @@ import { AttendingAs, CurrentStatus, Gender, RegistrationType } from './constant
 import { formSchema } from './schemas'
 import { revalidatePath } from 'next/cache'
 import bcrypt from 'bcryptjs'
+import { TALKSHOW_PARTICIPANT_DEADLINES, isTalkshowParticipantClosed } from './deadlines'
 
 export async function checkEarlyBirdStatus() {
   try { //check if early bird period is active manually
@@ -58,6 +59,14 @@ export async function registerEvent(formData: FormData) {
     const { isEarlyBird, period } = await checkEarlyBirdStatus();
 
     if (validatedData.attendingAs === AttendingAs.PARTICIPANT) {
+      if (isTalkshowParticipantClosed(validatedData.sessionType)) {
+        const deadline = TALKSHOW_PARTICIPANT_DEADLINES[validatedData.sessionType]
+        return {
+          success: false,
+          error: `${deadline.label} Talkshow Participant registration closed on ${deadline.displayDate}.`,
+        }
+      }
+
       await db.registration.create({
         data: {
           attendingAs: validatedData.attendingAs,
