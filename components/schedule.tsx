@@ -52,20 +52,22 @@ const Schedule = () => {
   return (
     <div className="w-full overflow-x-auto pb-2">
       <div className="min-w-[880px] px-1">
-        <div className="relative mt-10 h-1 rounded-full bg-border">
-          <div className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary to-sky-500 transition-all duration-700" style={{ width: progressPercent }} />
+        <div className="relative mt-10">
+          <div className="absolute left-[10%] right-[10%] top-0 h-1 -translate-y-1/2 rounded-full bg-border">
+            <div className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary to-sky-500 transition-all duration-700" style={{ width: progressPercent }} />
+          </div>
         </div>
-        <div className="grid grid-cols-5 gap-4 mt-0">
+        <div className="grid grid-cols-5 mt-0">
           {scheduleItems.map((item, index) => (
-            <div key={item.title} className="relative pt-8">
-              <div className={`absolute -top-3 left-0 h-7 w-7 rounded-full border-4 border-background shadow transition-colors ${
+            <div key={item.title} className="relative px-2 pt-8">
+              <div className={`absolute left-1/2 top-0 h-7 w-7 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-background shadow transition-colors ${
                 (now?.getTime() ?? 0) >= checkpointDates[index] ? "bg-primary" : "bg-slate-300"
               }`} />
-              <p className={`text-xs font-semibold uppercase tracking-wide ${
+              <p className={`text-center text-xs font-semibold uppercase tracking-wide ${
                 (now?.getTime() ?? 0) >= checkpointDates[index] ? "text-primary" : "text-muted-foreground"
               }`}>{item.date}</p>
               <div className="mt-2 rounded-lg border bg-background p-3 shadow-sm min-h-24">
-                <p className="text-sm font-medium text-foreground">{item.title}</p>
+                <p className="text-center text-sm font-medium text-foreground">{item.title}</p>
               </div>
             </div>
           ))}
